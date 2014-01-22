@@ -21,6 +21,27 @@
                               [111, "111th"]]]
       (is (= (ordinal testnum) result))))
 
+  (testing "Testing intword function."
+    (doseq [[testnum result format] [[100 "100.0"]
+                                     [ 1000000 "1.0 million"]
+                                     [ 1200000 "1.2 million"]
+                                     [ 1290000 "1.3 million"]
+                                     [ 1000000000 "1.0 billion"]
+                                     [ 2000000000  "2.0 billion"]
+                                     [ 6000000000000 "6.0 trillion"]
+                                     [1300000000000000 "1.3 quadrillion"]
+                                     [3500000000000000000000 "3.5 sextillion"]
+                                     [8100000000000000000000000000000000 "8.1 decillion"]
+                                     [1230000 "1.23 million" "%.2f"]
+                                     [(expt 10 101) "10.0 googol"]
+                                     ]]
+      ;; default argument
+      (let [format (if (nil? format) "%.1f" format)]
+        (is (= (intword testnum
+                        :format format
+                        )
+               result)))))
+
   (testing "Testing filesize function."
     (doseq [[testsize result binary format] [[300, "300.0B"]
                                              [3000, "3.0KB"]
@@ -31,6 +52,7 @@
                                              [3000000, "2.9MiB", true]
                                              [(* (expt 10 26) 30), "3000.0YB"]
                                              [(* (expt 10 26) 30), "2481.5YiB", true]
+
                                              ]]
       ;; default argument
       (let [binary (boolean binary)
