@@ -1,6 +1,7 @@
 (ns clojure.contrib.humanize-test
   (:require [clojure.test :refer :all]
-            [clojure.contrib.humanize :refer :all]))
+            [clojure.contrib.humanize :refer :all]
+            [clojure.math.numeric-tower :refer :all]))
 
 (deftest a-test
   (testing "Testing intcomma function."
@@ -20,4 +21,23 @@
                               [111, "111th"]]]
       (is (= (ordinal testnum) result))))
 
+  (testing "Testing filesize function."
+    (doseq [[testsize result binary format] [[300, "300.0B"]
+                                             [3000, "3.0KB"]
+                                             [3000000, "3.0MB"]
+                                             [3000000000, "3.0GB"]
+                                             [3000000000000, "3.0TB"]
+                                             [3000, "2.9KiB", true]
+                                             [3000000, "2.9MiB", true]
+                                             [(* (expt 10 26) 30), "3000.0YB"]
+                                             [(* (expt 10 26) 30), "2481.5YiB", true]
+                                             ]]
+      ;; default argument
+      (let [binary (boolean binary)
+            format (if (nil? format) "%.1f" format)]
+        (is (= (filesize testsize
+                         :binary binary
+                         :format format
+                         )
+               result)))))
   )
