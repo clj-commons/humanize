@@ -24,6 +24,7 @@ user>  (clojure.contrib.humanize/intcomma 1000000)
 ```
 
 ### intword
+
 Converts a large integer to a friendly text representation. Works best
 for numbers over 1 million. For example, 1000000 becomes '1.0
 million', 1200000 becomes '1.2 million' and '1200000000' becomes '1.2
@@ -45,6 +46,7 @@ user>  (clojure.contrib.humanize/intword 8100000000000000000000000000000000N)
 ```
 
 ### ordinal
+
 Converts an integer to its ordinal as a string.
 
 ```clojure
@@ -79,6 +81,19 @@ user>  (clojure.contrib.humanize/filesize 3000 :binary true :format " %.2f "" ")
 
 user>  (clojure.contrib.humanize/filesize 3000000 :binary true)
 2.9MiB
+```
+
+### truncate
+
+Truncate a string with suffix (ellipsis by default) if it is longer
+than specified length.
+
+```clojure
+user> (clojure.contrib.humanize/truncate "abcdefghijklmnopqrstuvwxyz" 10)
+"abcdefg..."
+
+user> (clojure.contrib.humanize/truncate "abcdefghijklmnopqrstuvwxyz" 10 "...xyz")
+"abcd...xyz"
 ```
 
 ## TODO
