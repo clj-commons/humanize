@@ -2,12 +2,12 @@
   (:require [clojure.math.numeric-tower :refer :all]))
 
 (defn in? [x coll]
-  """ Return true if x is in coll, else false. """
+  " Return true if x is in coll, else false. "
   (some #(= x %) coll))
 
 (defn intcomma [num]
-  """ Converts an integer to a string containing commas. every three digits.
-      For example, 3000 becomes '3,000' and 45000 becomes '45,000'. """
+  " Converts an integer to a string containing commas. every three digits.
+      For example, 3000 becomes '3,000' and 45000 becomes '45,000'. "
   (let [
         decimal (abs (int num)) ;;  FIXME: (abs )
         sign (if (< num 0) "-" "")
@@ -29,8 +29,8 @@
 
 
 (defn ordinal [num]
-  """Converts an integer to its ordinal as a string. 1 is '1st', 2 is '2nd',
-    3 is '3rd', etc."""
+  "Converts an integer to its ordinal as a string. 1 is '1st', 2 is '2nd',
+    3 is '3rd', etc."
     (let [ordinals ["th", "st", "nd", "rd", "th",
                     "th", "th", "th", "th", "th"]
           remainder-100 (rem num 100)
@@ -46,10 +46,10 @@
      (round (java.lang.Math/log base))))
 
 (defn intword [num & {:keys [format] :or {format "%.1f"}}]
-  """Converts a large integer to a friendly text representation. Works best for
+  "Converts a large integer to a friendly text representation. Works best for
     numbers over 1 million. For example, 1000000 becomes '1.0 million', 1200000
     becomes '1.2 million' and '1200000000' becomes '1.2 billion'.  Supports up to
-    decillion (33 digits) and googol (100 digits)."""
+    decillion (33 digits) and googol (100 digits)."
   (let [human-pows {
                     0 "",
                       6 " million",
@@ -80,9 +80,9 @@
 (defn filesize [bytes & {:keys [binary format]
                          :or {binary false
                               format "%.1f"}}]
-  """ Format a number of byteslike a human readable filesize (eg. 10 kB).  By
+  " Format a number of byteslike a human readable filesize (eg. 10 kB).  By
     default, decimal suffixes (kB, MB) are used.  Passing binary=true will use
-    binary suffixes (KiB, MiB) are used"""
+    binary suffixes (KiB, MiB) are used. "
 
   (let [decimal-sizes  [:B, :KB, :MB, :GB, :TB,
                         :PB, :EB, :ZB, :YB]
@@ -102,3 +102,18 @@
         ]
 
     (clojure.core/format (str format "%s") value suffix)))
+
+(defn truncate
+  "Truncate a string with suffix (ellipsis by default) if it is
+   longer than specified length."
+
+  ([string length suffix]
+     (let [string-len (count string)
+           suffix-len (count suffix)]
+
+       (if (<= string-len length)
+         string
+         (str (subs string 0 (- length suffix-len)) suffix))))
+
+  ([string length]
+     (truncate string length "...")))
