@@ -117,3 +117,59 @@
 
   ([string length]
      (truncate string length "...")))
+
+(defn pluralize [count string]
+  "FIXME: dummy implementation"
+  (if (<= count 1)
+    string
+    (str string "s")))
+
+(defn oxford [coll  & {:keys [maximum-display truncate-noun]
+                         :or {maximum-display 4
+                              truncate-noun nil}}]
+  "Converts a list of items to a human readable string
+   with an optional limit."
+
+  (let [coll-length (count coll)]
+    (cond
+     ;; if coll has one or zero items
+     (< coll-length 2) (clojure.string/join coll)
+
+     ;; if the number of items doesn't exceed maximum display size
+     (<= coll-length maximum-display) (let [before-last (take (dec coll-length) coll)
+                                            last-item (last coll)]
+                                        (str (clojure.string/join (interpose ", " before-last))
+                                             " and " last-item))
+
+     (> coll-length maximum-display) (let [display-coll (take maximum-display coll)
+                                           remaining (- coll-length maximum-display)
+                                           last-item (if (empty? truncate-noun)
+                                                       (str remaining " " (pluralize remaining "other"))
+                                                       (str remaining " other " (pluralize remaining
+                                                                                           truncate-noun)))
+                                                       ]
+                                       (str (clojure.string/join (interpose ", " display-coll))
+                                                " and " last-item))
+     ;; TODO: shouldn't reach here, throw exception
+     :else coll-length)
+    ))
+
+;; Humanize.oxford = (items, limit, limitStr) ->
+;;     numItems = items.length
+
+;;     if numItems < 2
+;;         return "#{items}"
+
+;;     else if numItems is 2
+;;         return items.join ' and '
+
+;;     else if limit? and numItems > limit
+;;         extra = numItems - limit
+;;         limitIndex = limit
+;;         limitStr ?= ", and #{extra} #{Humanize.pluralize(extra, 'other')}"
+
+;;     else
+;;         limitIndex = -1
+;;         limitStr = ", and #{items[numItems - 1]}"
+
+;;     items.slice(0, limitIndex).join(', ') + limitStr
