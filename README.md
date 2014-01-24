@@ -1,3 +1,4 @@
+
 # clojure-humanize
 
 A Clojure library to produce human readable strings for numbers, dates
@@ -94,6 +95,24 @@ user> (clojure.contrib.humanize/truncate "abcdefghijklmnopqrstuvwxyz" 10)
 
 user> (clojure.contrib.humanize/truncate "abcdefghijklmnopqrstuvwxyz" 10 "...xyz")
 "abcd...xyz"
+```
+
+### oxford
+Converts a list of items to a human readable string with an optional
+limit.
+
+```clojure
+user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango"])
+"apple, orange and mango"
+
+user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango" "pear"]
+                                       :maximum-display 2)
+"apple, orange and 2 others"
+
+user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango" "pear"]
+                                       :maximum-display 2
+                                       :truncate-noun "fruit")
+"apple, orange and 2 other fruits"
 ```
 
 ## TODO
