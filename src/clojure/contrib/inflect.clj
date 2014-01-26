@@ -30,9 +30,20 @@
   (swap! *pluralize-noun-exceptions* into exceptions))
 
 ;; the order of rules is important
-(add-pluralize-noun-rule "For irregular nouns, use the exceptions"
-                         (fn [noun]  (contains? @*pluralize-noun-exceptions* noun))
+(add-pluralize-noun-rule "For irregular nouns, use the exceptions."
+                         (fn [noun] (contains? @*pluralize-noun-exceptions* noun))
                          (fn [noun] (@*pluralize-noun-exceptions* noun)))
+
+(add-pluralize-noun-rule "For nouns ending in consonant + y, suffixes `ies' "
+                         (fn [noun] (and (.endsWith noun "y")
+                                         (not (boolean (in?  (-> noun butlast last) ;; before-last char
+                                                             [\a \e \i \o \u])))))
+                         (fn [noun] (str (clojure.string/join (butlast noun)) "ies")))
+
+(add-pluralize-noun-rule "For nouns ending in ss, x, z, ch or sh, add es."
+                         (fn [noun] (some #(.endsWith noun %)
+                                          ["ss" "x" "z" "ch" "sh"]))
+                         (fn [noun] (str noun "es")))
 
 (add-pluralize-noun-rule "Always append `s' at the end of noun."
                          (fn [noun] true) ;; always return true
