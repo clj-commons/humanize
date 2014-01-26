@@ -115,6 +115,28 @@ user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango" "pear"]
 "apple, orange and 2 other fruits"
 ```
 
+### pluralize-noun
+
+Return the pluralized noun if the given number is greater than 1.
+
+```clojure
+user> (clojure.contrib.inflect/pluralize-noun 2 "theif" )
+"theives"
+
+user> (clojure.contrib.inflect/pluralize-noun 3 "tomato" )
+"tomatoes"
+
+user> (clojure.contrib.inflect/pluralize-noun 4 "roof" )
+"roofs"
+
+user> (clojure.contrib.inflect/pluralize-noun 5 "person" )
+"people"
+
+user> (clojure.contrib.inflect/pluralize-noun 6 "buzz" )
+"buzzes"
+
+```
+
 ## TODO
 
 + Add other missing functions
