@@ -150,26 +150,6 @@
                                                        ]
                                        (str (clojure.string/join (interpose ", " display-coll))
                                                 " and " last-item))
+
      ;; TODO: shouldn't reach here, throw exception
-     :else coll-length)
-    ))
-
-;; Humanize.oxford = (items, limit, limitStr) ->
-;;     numItems = items.length
-
-;;     if numItems < 2
-;;         return "#{items}"
-
-;;     else if numItems is 2
-;;         return items.join ' and '
-
-;;     else if limit? and numItems > limit
-;;         extra = numItems - limit
-;;         limitIndex = limit
-;;         limitStr ?= ", and #{extra} #{Humanize.pluralize(extra, 'other')}"
-
-;;     else
-;;         limitIndex = -1
-;;         limitStr = ", and #{items[numItems - 1]}"
-
-;;     items.slice(0, limitIndex).join(', ') + limitStr
+     :else coll-length)))
