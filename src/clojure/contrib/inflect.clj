@@ -34,16 +34,24 @@
                          (fn [noun] (contains? @*pluralize-noun-exceptions* noun))
                          (fn [noun] (@*pluralize-noun-exceptions* noun)))
 
-(add-pluralize-noun-rule "For nouns ending in consonant + y, suffixes `ies' "
+(add-pluralize-noun-rule "For nouns ending within consonant + y, suffixes `ies' "
                          (fn [noun] (and (.endsWith noun "y")
                                          (not (boolean (in?  (-> noun butlast last) ;; before-last char
                                                              [\a \e \i \o \u])))))
-                         (fn [noun] (str (clojure.string/join (butlast noun)) "ies")))
+                         (fn [noun] (str (-> noun butlast clojure.string/join) "ies")))
 
-(add-pluralize-noun-rule "For nouns ending in ss, x, z, ch or sh, add es."
+(add-pluralize-noun-rule "For nouns ending with ss, x, z, ch or sh, suffixes `es.'"
                          (fn [noun] (some #(.endsWith noun %)
                                           ["ss" "x" "z" "ch" "sh"]))
                          (fn [noun] (str noun "es")))
+
+(add-pluralize-noun-rule "For nouns ending with `f', suffixes `ves'"
+                         (fn [noun] (.endsWith noun "f"))
+                         (fn [noun] (str (-> noun butlast clojure.string/join) "ves")))
+
+(add-pluralize-noun-rule "For nouns ending with `fe', suffixes `ves'"
+                         (fn [noun] (.endsWith noun "fe"))
+                         (fn [noun] (str (-> noun butlast butlast clojure.string/join) "ves")))
 
 (add-pluralize-noun-rule "Always append `s' at the end of noun."
                          (fn [noun] true) ;; always return true

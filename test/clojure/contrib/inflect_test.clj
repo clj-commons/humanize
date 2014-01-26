@@ -14,7 +14,13 @@
   (testing "Testing Nouns ending in y."
     (is (= (pluralize-noun 2 "boy") "boys"))
     (is (= (pluralize-noun 2 "holiday") "holidays"))
-    (is (= (pluralize-noun 2 "party") "parties")))
+    (is (= (pluralize-noun 2 "party") "parties"))
+    (is (= (pluralize-noun 2 "nanny") "nannies")))
+
+  (testing "Testing nounse ending in F o FE"
+    (is (= (pluralize-noun 2 "life") "lives"))
+    (is (= (pluralize-noun 2 "thief") "thieves"))
+    )
 
   (testing "Testing general nouns."
     (is (= (pluralize-noun 2 "car") "cars"))
@@ -26,4 +32,5 @@
   (testing "Testing irregulars nouns"
     (is (= (pluralize-noun 2 "ox") "oxen"))
     (is (= (pluralize-noun 2 "moose") "moose")))
+
   )
