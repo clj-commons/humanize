@@ -61,8 +61,46 @@
                                {
                                 "ox" "oxen",
                                 "child" "children",
-                                "brother" "brethen"
+                                "brother" "brethen",
+                                "man" "men",
+                                "woman" "women",
+                                "foot" "feet",
+                                "tooth" "teeth",
+                                "goose" "geese",
+                                "mouse" "mice" ,
+                                "person" "people",
+                                "louse" "lice",
                                 })
+
+
+(add-pluralize-noun-exceptions "Irregular nouns ending in f"
+                               {
+                                "chef" "chefs",
+                                "cliff" "cliffs",
+                                "ref" "refs",
+                                "roof" "roofs",
+                                }
+                               )
+
+(add-pluralize-noun-exceptions "Irregular nouns ending in o-es"
+                               {
+                                "negro" "negroes",
+                                "buffalo" "buffaloes",
+                                "flamingo" "flamingoes",
+                                "hero" "heroes",
+                                "mango" "mangoes",
+                                "mosquito" "mosquitoes",
+                                "potato" "potatoes",
+                                "tomato" "tomatoes",
+                                "tornado" "tornadoes",
+                                "torpedo" "torpedoes",
+                                "tuxedo" "tuxedoes",
+                                "volcano" "volcanoes",
+                                "zero" "zeroes",
+                                "echo" "echoes",
+                                "banjo" "banjoes",
+                                }
+                               )
 
 (add-pluralize-noun-exceptions "Nouns with identical singular and plural forms."
                                {

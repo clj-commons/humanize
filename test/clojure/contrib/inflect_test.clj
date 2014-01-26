@@ -20,7 +20,7 @@
   (testing "Testing nounse ending in F o FE"
     (is (= (pluralize-noun 2 "life") "lives"))
     (is (= (pluralize-noun 2 "thief") "thieves"))
-    )
+    (is (= (pluralize-noun 2 "roof") "roofs")))
 
   (testing "Testing general nouns."
     (is (= (pluralize-noun 2 "car") "cars"))
@@ -31,6 +31,6 @@
 
   (testing "Testing irregulars nouns"
     (is (= (pluralize-noun 2 "ox") "oxen"))
-    (is (= (pluralize-noun 2 "moose") "moose")))
-
+    (is (= (pluralize-noun 2 "moose") "moose"))
+    (is (= (pluralize-noun 2 "hero") "heroes")))
   )
