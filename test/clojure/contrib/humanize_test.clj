@@ -1,6 +1,7 @@
 (ns clojure.contrib.humanize-test
   (:require [clojure.test :refer :all]
             [clojure.contrib.humanize :refer :all]
+            [clojure.contrib.inflect :refer :all]
             [clojure.math.numeric-tower :refer :all]))
 
 (deftest intcomma-test
@@ -110,7 +111,7 @@
                     :truncate-noun truncate-noun)
             (str (items 0) ", "
                  (items 1) ", "
-                 (items 2) " and " 2 " other " (pluralize 2 truncate-noun)))
+                 (items 2) " and " 2 " other " (pluralize-noun 2 truncate-noun)))
         (is (oxford (take 3 items)
                     :truncate-string truncate-noun)
             (str (items 0) ", "

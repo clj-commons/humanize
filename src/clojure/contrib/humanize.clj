@@ -1,9 +1,6 @@
 (ns clojure.contrib.humanize
-  (:require [clojure.math.numeric-tower :refer :all]))
-
-(defn in? [x coll]
-  " Return true if x is in coll, else false. "
-  (some #(= x %) coll))
+  (:require [clojure.math.numeric-tower :refer :all])
+  (:require [clojure.contrib.inflect :refer :all]))
 
 (defn intcomma [num]
   " Converts an integer to a string containing commas. every three digits.
@@ -118,15 +115,9 @@
   ([string length]
      (truncate string length "...")))
 
-(defn pluralize [count string]
-  "FIXME: dummy implementation"
-  (if (<= count 1)
-    string
-    (str string "s")))
-
 (defn oxford [coll  & {:keys [maximum-display truncate-noun]
-                         :or {maximum-display 4
-                              truncate-noun nil}}]
+                       :or {maximum-display 4
+                            truncate-noun nil}}]
   "Converts a list of items to a human readable string
    with an optional limit."
 
@@ -144,12 +135,12 @@
      (> coll-length maximum-display) (let [display-coll (take maximum-display coll)
                                            remaining (- coll-length maximum-display)
                                            last-item (if (empty? truncate-noun)
-                                                       (str remaining " " (pluralize remaining "other"))
-                                                       (str remaining " other " (pluralize remaining
-                                                                                           truncate-noun)))
-                                                       ]
+                                                       (str remaining " " (pluralize-noun remaining "other"))
+                                                       (str remaining " other " (pluralize-noun remaining
+                                                                                                truncate-noun)))
+                                           ]
                                        (str (clojure.string/join (interpose ", " display-coll))
-                                                " and " last-item))
+                                            " and " last-item))
 
      ;; TODO: shouldn't reach here, throw exception
      :else coll-length)))
