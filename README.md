@@ -2,9 +2,17 @@
 # clojure-humanize
 
 A Clojure library to produce human readable strings for numbers, dates
-based on similar python, javascript libraries
+based on similar libraries in other languages
 
 ## Usage
+
+* [intcomma](#intcomma)
+* [intword](#intword)
+* [ordinal](#ordinal)
+* [filesize](#filesize)
+* [truncate](#truncate)
+* [oxford](#oxford)
+* [pluralize-noun](#pluralize-noun)
 
 ### intcomma
 
