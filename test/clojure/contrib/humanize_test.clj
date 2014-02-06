@@ -148,4 +148,23 @@
   (testing "should return _ months ago if the difference is less then a year."
     (is (=  (datetime (now) :now-dt (-> 10 weeks from-now)) "2 months ago"))
     (is (=  (datetime (now) :now-dt (-> 10 months from-now)) "10 months ago"))
-    (is (=  (datetime (now) :now-dt (-> 1 months from-now)) "1 month ago"))))
+    (is (=  (datetime (now) :now-dt (-> 1 months from-now)) "1 month ago")))
+
+  (testing "should return _ years ago if the difference is less then a decade."
+    (is (=  (datetime (now) :now-dt (-> 3 years from-now)) "3 years ago"))
+    (is (=  (datetime (now) :now-dt (-> 1 years from-now)) "1 year ago")))
+
+  (testing "should return _ decade ago if the difference is less then a century."
+    (is (=  (datetime (now) :now-dt (-> (* 3 10) years  from-now)) "3 decades ago"))
+    (is (=  (datetime (now) :now-dt (-> (* 1 10) years from-now)) "1 decade ago")))
+
+  ;; FIXME: BUG in joda
+  ;; (testing "should return _ century ago if the difference is less then a millennium."
+  ;;   (is (=  (datetime (now) :now-dt (-> (* 3 100) years from-now)) "3 centuries ago"))
+  ;;   (is (=  (datetime (now) :now-dt (-> (* 1 100) years from-now)) "1 century ago")))
+
+  ;; (testing "should return _ millennia ago if the difference is less then 10 millennia."
+  ;;   (is (=  (datetime (now) :now-dt (-> (* 3 1000) years from-now)) "3 millennia ago"))
+  ;;   (is (=  (datetime (now) :now-dt (-> (* 1 1000) years from-now)) "1 millennium ago")))
+
+  )

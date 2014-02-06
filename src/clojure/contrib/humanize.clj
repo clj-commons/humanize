@@ -151,8 +151,8 @@
      :else coll-length)))
 
 (defn datetime [then-dt & {:keys [now-dt suffix]
-                      :or {now-dt (local-now)
-                           suffix  "ago"}}]
+                           :or {now-dt (local-now)
+                                suffix  "ago"}}]
 
   (let [then-dt (to-date-time then-dt)
         now-dt  (to-date-time now-dt)
@@ -168,8 +168,8 @@
 
      ;; if the diff is less than an hour
      (<= (in-hours diff) 0) (str (in-minutes diff) " "
-                                   (pluralize-noun (in-minutes diff) "minute")
-                                   " " suffix)
+                                 (pluralize-noun (in-minutes diff) "minute")
+                                 " " suffix)
 
      ;; if the diff is less than a day
      (<= (in-days diff) 0) (str (in-hours diff) " "
@@ -178,20 +178,38 @@
 
      ;; if the diff is less than a week
      (<= (in-weeks diff) 0) (str (in-days diff) " "
-                                (pluralize-noun (in-days diff) "day")
-                                " " suffix)
+                                 (pluralize-noun (in-days diff) "day")
+                                 " " suffix)
 
      ;; if the diff is less than a month
      (<= (in-months diff) 0) (str (in-weeks diff) " "
-                                (pluralize-noun (in-weeks diff) "week")
-                                " " suffix)
+                                  (pluralize-noun (in-weeks diff) "week")
+                                  " " suffix)
 
      ;; if the diff is less than a year
      (<= (in-years diff) 0) (str (in-months diff) " "
-                                (pluralize-noun (in-months diff) "month")
-                                " " suffix)
+                                 (pluralize-noun (in-months diff) "month")
+                                 " " suffix)
+
+     ;; if the diff is less than a decade
+     (< (in-years diff) 10) (str (in-years diff) " "
+                                 (pluralize-noun (in-years diff) "year")
+                                 " " suffix)
+
+     ;; if the diff is less than a century
+     (< (in-years diff) 100) (str (-> diff in-years (/ 10) long) " "
+                                   (pluralize-noun (-> diff in-years (/ 10) long) "decade")
+                                   " " suffix)
+
+     ;; if the diff is less than a millennium
+     (< (in-years diff) 1000) (str (-> diff in-years (/ 100) long) " "
+                                    (pluralize-noun (-> diff in-years (/ 100) long) "century")
+                                    " " suffix)
+
+     ;; if the diff is less than 10 millennia
+     (< (in-years diff) 10000) (str (-> diff in-years (/ 1000) long) " "
+                                    (pluralize-noun (-> diff in-years (/ 1000) long) "millennium")
+                                    " " suffix)
 
      ;; FIXME:
-     :else (str (in-years diff) " "
-                (pluralize-noun (in-years diff) "year")
-                " " suffix))))
+     :else (to-string diff))))
