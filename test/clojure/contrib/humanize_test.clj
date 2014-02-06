@@ -2,7 +2,11 @@
   (:require [clojure.test :refer :all]
             [clojure.contrib.humanize :refer :all]
             [clojure.contrib.inflect :refer :all]
-            [clojure.math.numeric-tower :refer :all]))
+            [clojure.math.numeric-tower :refer :all]
+            [clj-time.core :refer [now from-now seconds minutes
+                                   hours days weeks months years]]
+            [clj-time.local :refer :all]
+            [clj-time.coerce :refer :all]))
 
 (deftest intcomma-test
   (testing "Testing intcomma function with expected data."
@@ -116,3 +120,32 @@
                     :truncate-string truncate-noun)
             (str (items 0) ", "
                  (items 1) " and " (items 2)))))))
+
+(deftest datetime-test
+  (testing "should return a moment ago if the difference is less then a sec."
+      (is (=  (datetime (now)) "a moment ago")))
+
+  (testing "should return _ seconds ago if the difference is less then a min."
+      (is (=  (datetime (now) :now-dt (-> 10 seconds from-now)) "10 seconds ago"))
+      (is (=  (datetime (now) :now-dt (-> 1 seconds from-now)) "1 second ago")))
+
+  (testing "should return _ minutes ago if the difference is less then an hour."
+      (is (=  (datetime (now) :now-dt (-> 10 minutes from-now)) "10 minutes ago"))
+      (is (=  (datetime (now) :now-dt (-> 1 minutes from-now)) "1 minute ago")))
+
+  (testing "should return _ hours ago if the difference is less then a day."
+      (is (=  (datetime (now) :now-dt (-> 10 hours from-now)) "10 hours ago"))
+      (is (=  (datetime (now) :now-dt (-> 1 hours from-now)) "1 hour ago")))
+
+  (testing "should return _ days ago if the difference is less then a week."
+      (is (=  (datetime (now) :now-dt (-> 5 days from-now)) "5 days ago"))
+      (is (=  (datetime (now) :now-dt (-> 1 days from-now)) "1 day ago")))
+
+  (testing "should return _ weeks ago if the difference is less then a month."
+    (is (=  (datetime (now) :now-dt (-> 10 days from-now)) "1 week ago"))
+    (is (=  (datetime (now) :now-dt (-> 3 weeks from-now)) "3 weeks ago")))
+
+  (testing "should return _ months ago if the difference is less then a year."
+    (is (=  (datetime (now) :now-dt (-> 10 weeks from-now)) "2 months ago"))
+    (is (=  (datetime (now) :now-dt (-> 10 months from-now)) "10 months ago"))
+    (is (=  (datetime (now) :now-dt (-> 1 months from-now)) "1 month ago"))))

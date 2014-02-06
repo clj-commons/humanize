@@ -1,6 +1,11 @@
 (ns clojure.contrib.humanize
-  (:require [clojure.math.numeric-tower :refer :all])
-  (:require [clojure.contrib.inflect :refer :all]))
+  (:require [clojure.math.numeric-tower :refer :all]
+            [clojure.contrib.inflect :refer :all]
+            [clj-time.core :refer [date-time interval in-seconds
+                                   in-minutes in-hours in-days
+                                   in-weeks in-months in-years]]
+            [clj-time.local :refer :all]
+            [clj-time.coerce :refer :all]))
 
 (defn intcomma [num]
   " Converts an integer to a string containing commas. every three digits.
@@ -144,3 +149,49 @@
 
      ;; TODO: shouldn't reach here, throw exception
      :else coll-length)))
+
+(defn datetime [then-dt & {:keys [now-dt suffix]
+                      :or {now-dt (local-now)
+                           suffix  "ago"}}]
+
+  (let [then-dt (to-date-time then-dt)
+        now-dt  (to-date-time now-dt)
+        diff    (interval then-dt now-dt)]
+    (cond
+     ;; if the diff is less than a second
+     (<= (in-seconds diff) 0) (str "a moment " suffix)
+
+     ;; if the diff is less than a minute
+     (<= (in-minutes diff) 0) (str (in-seconds diff) " "
+                                   (pluralize-noun (in-seconds diff) "second")
+                                   " " suffix)
+
+     ;; if the diff is less than an hour
+     (<= (in-hours diff) 0) (str (in-minutes diff) " "
+                                   (pluralize-noun (in-minutes diff) "minute")
+                                   " " suffix)
+
+     ;; if the diff is less than a day
+     (<= (in-days diff) 0) (str (in-hours diff) " "
+                                (pluralize-noun (in-hours diff) "hour")
+                                " " suffix)
+
+     ;; if the diff is less than a week
+     (<= (in-weeks diff) 0) (str (in-days diff) " "
+                                (pluralize-noun (in-days diff) "day")
+                                " " suffix)
+
+     ;; if the diff is less than a month
+     (<= (in-months diff) 0) (str (in-weeks diff) " "
+                                (pluralize-noun (in-weeks diff) "week")
+                                " " suffix)
+
+     ;; if the diff is less than a year
+     (<= (in-years diff) 0) (str (in-months diff) " "
+                                (pluralize-noun (in-months diff) "month")
+                                " " suffix)
+
+     ;; FIXME:
+     :else (str (in-years diff) " "
+                (pluralize-noun (in-years diff) "year")
+                " " suffix))))
