@@ -13,6 +13,7 @@ based on similar libraries in other languages
 * [truncate](#truncate)
 * [oxford](#oxford)
 * [pluralize-noun](#pluralize-noun)
+* [datetime](#datetime)
 
 ### intcomma
 
@@ -142,6 +143,23 @@ user> (clojure.contrib.inflect/pluralize-noun 5 "person" )
 
 user> (clojure.contrib.inflect/pluralize-noun 6 "buzz" )
 "buzzes"
+
+```
+
+### datetime
+
+Given a datetime or date, return a human-friendly representation
+of the amount of time elapsed.
+
+```clojure
+user> (clojure.contrib.humanize/datetime (plus (now) (seconds -30)))
+"30 seconds ago"
+
+user> (clojure.contrib.humanize/datetime (plus (now) (years -20)))
+"2 decades ago"
+
+user> (clojure.contrib.humanize/datetime (plus (now) (years -7)))
+"7 years ago"
 
 ```
 

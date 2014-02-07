@@ -154,6 +154,8 @@
                            :or {now-dt (local-now)
                                 suffix  "ago"}}]
 
+  "Given a datetime or date, return a human-friendly representation
+   of the amount of time elapsed. "
   (let [then-dt (to-date-time then-dt)
         now-dt  (to-date-time now-dt)
         diff    (interval then-dt now-dt)]
