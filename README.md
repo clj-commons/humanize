@@ -6,6 +6,7 @@ based on similar libraries in other languages
 
 ## Usage
 
+* [numberword](#numberword)
 * [intcomma](#intcomma)
 * [intword](#intword)
 * [ordinal](#ordinal)
@@ -14,6 +15,23 @@ based on similar libraries in other languages
 * [oxford](#oxford)
 * [pluralize-noun](#pluralize-noun)
 * [datetime](#datetime)
+
+### numberword
+
+Takes a number and return a full written string form. For example,
+23237897 will be written as "twenty-three million two hundred and
+thirty-seven thousand eight hundred and ninety-seven".
+
+```clojure
+user> (numberword 3567)
+"three thousand five hundred and sixty-seven"
+
+user> (numberword 25223)
+"twenty-five thousand two hundred and twenty-three"
+
+user> (numberword 23237897)
+"twenty-three million two hundred and thirty-seven thousand eight hundred and ninety-seven"
+```
 
 ### intcomma
 
@@ -172,7 +190,7 @@ user> (clojure.contrib.humanize/datetime (plus (now) (years -7)))
 
 ## License
 
-Copyright © 2014 Thura Hlaing
+Copyright © 2015 Thura Hlaing
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.

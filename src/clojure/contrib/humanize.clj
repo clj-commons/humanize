@@ -1,6 +1,7 @@
 (ns clojure.contrib.humanize
   (:require [clojure.math.numeric-tower :refer :all]
             [clojure.contrib.inflect :refer :all]
+            [clojure.string :refer [join]]
             [clj-time.core :refer [date-time interval in-seconds
                                    in-minutes in-hours in-days
                                    in-weeks in-months in-years]]
@@ -54,18 +55,18 @@
     decillion (33 digits) and googol (100 digits)."
   (let [human-pows {
                     0 "",
-                      6 " million",
-                      9  " billion",
-                      12  " trillion",
-                      15  " quadrillion",
-                      18 " quintillion",
-                      21  " sextillion",
-                      24  " septillion",
-                      27 " octillion",
-                      30  " nonillion",
-                      33  " decillion",
-                      100 " googol",
-                      }
+                    6 " million",
+                    9  " billion",
+                    12  " trillion",
+                    15  " quadrillion",
+                    18 " quintillion",
+                    21  " sextillion",
+                    24  " septillion",
+                    27 " octillion",
+                    30  " nonillion",
+                    33  " decillion",
+                    100 " googol",
+                    }
 
         base-pow  (int (floor (java.lang.Math/log10 num)))
         base-pow  (if (contains? human-pows base-pow)
@@ -75,9 +76,55 @@
         suffix (get human-pows base-pow)
         value (float (/ num (expt 10 base-pow)))
         ]
-    (clojure.core/format (str format "%s") value suffix)
-    ))
+    (clojure.core/format (str format "%s") value suffix)))
 
+
+(def ^:private numap
+  {0 "",1 "one",2 "two",3 "three",4 "four",5 "five",
+   6 "six",7 "seven",8 "eight",9 "nine",10 "ten",
+   11 "eleven",12 "twelve",13 "thirteen",14 "fourteen",
+   15 "fifteen",16 "sixteen",17 "seventeen",18 "eighteen",
+   19 "nineteen",20 "twenty",30 "thirty",40 "forty",
+   50 "fifty",60 "sixty",70 "seventy",80 "eighty",90 "ninety"})
+
+(defn numberword [num]
+  "Takes a number and return a full written string form. For example,
+   23237897 will be written as \"twenty-three million two hundred and
+   thirty-seven thousand eight hundred and ninety-seven\".  "
+
+  ;; special case for zero
+  (if (zero? num)
+    "zero"
+
+  (let [digitcnt (int (Math/log10 num))
+        divisible? (fn [num div] (zero? (rem num div)))
+        n-digit (fn [num n] (Character/getNumericValue (.charAt (str num) n)))]
+
+    (cond
+     ;; handle million part
+     (>= digitcnt 6)    (join " " [(numberword (int (/ num 1000000)))
+                                  "million"
+                                  (numberword (rem num 1000000))])
+
+     ;; handle thousand part
+     (>= digitcnt 3)    (join " " [(numberword (int (/ num 1000)))
+                                   "thousand"
+                                   (numberword (rem num 1000))])
+
+     ;; handle hundred part
+     (>= digitcnt 2)    (if (divisible? num 100)
+                          (join " " [(numap (int (/ num 100)))
+                                     "hundred"])
+                          (join " " [(numap (int (/ num 100)))
+                                     "hundred"
+                                     "and"
+                                     (numberword (rem num 100))]))
+
+     ;; handle the last two digits
+     (< num 20)                 (numap num)
+     (divisible? num 10)        (numap num)
+     :else                      (join "-" [(numap (* 10 (n-digit num 0)))
+                                           (numap (n-digit num 1))])))))
 
 (defn filesize [bytes & {:keys [binary format]
                          :or {binary false
@@ -129,12 +176,12 @@
   (let [coll-length (count coll)]
     (cond
      ;; if coll has one or zero items
-     (< coll-length 2) (clojure.string/join coll)
+     (< coll-length 2) (join coll)
 
      ;; if the number of items doesn't exceed maximum display size
      (<= coll-length maximum-display) (let [before-last (take (dec coll-length) coll)
                                             last-item (last coll)]
-                                        (str (clojure.string/join (interpose ", " before-last))
+                                        (str (join (interpose ", " before-last))
                                              " and " last-item))
 
      (> coll-length maximum-display) (let [display-coll (take maximum-display coll)
@@ -144,7 +191,7 @@
                                                        (str remaining " other " (pluralize-noun remaining
                                                                                                 truncate-noun)))
                                            ]
-                                       (str (clojure.string/join (interpose ", " display-coll))
+                                       (str (join (interpose ", " display-coll))
                                             " and " last-item))
 
      ;; TODO: shouldn't reach here, throw exception

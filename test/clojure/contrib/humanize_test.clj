@@ -49,6 +49,23 @@
                         )
                result))))))
 
+(deftest numberword-test
+  (testing "Testing numberword function with expected data."
+    (doseq [[testnum result] [[0 "zero"]
+                              [7 "seven"]
+                              [12 "twelve"]
+                              [40 "forty"]
+                              [94 "ninety-four"]
+                              [51 "fifty-one"]
+                              [234 "two hundred and thirty-four"]
+                              [3567 "three thousand five hundred and sixty-seven"]
+                              [44120 "forty-four thousand one hundred and twenty"]
+                              [25223 "twenty-five thousand two hundred and twenty-three"]
+                              [5223 "five thousand two hundred and twenty-three"]
+                              [23237897 "twenty-three million two hundred and thirty-seven thousand eight hundred and ninety-seven"]]]
+      ;; default argument
+      (is (= (numberword testnum) result)))))
+
 (deftest filesize-test
   (testing "Testing filesize function with expected data."
     (doseq [[testsize result binary format] [[300, "300.0B"]
