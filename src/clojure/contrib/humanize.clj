@@ -133,6 +133,10 @@
     default, decimal suffixes (kB, MB) are used.  Passing binary=true will use
     binary suffixes (KiB, MiB) are used. "
 
+  (if (zero? bytes)
+    ;; special case for zero
+    "0"
+
   (let [decimal-sizes  [:B, :KB, :MB, :GB, :TB,
                         :PB, :EB, :ZB, :YB]
         binary-sizes [:B, :KiB, :MiB, :GiB, :TiB,
@@ -150,7 +154,7 @@
         value (float (/ bytes (expt base base-pow)))
         ]
 
-    (clojure.core/format (str format "%s") value suffix)))
+    (clojure.core/format (str format "%s") value suffix))))
 
 (defn truncate
   "Truncate a string with suffix (ellipsis by default) if it is

@@ -68,7 +68,8 @@
 
 (deftest filesize-test
   (testing "Testing filesize function with expected data."
-    (doseq [[testsize result binary format] [[300, "300.0B"]
+    (doseq [[testsize result binary format] [[0, "0"]
+                                             [300, "300.0B"]
                                              [3000, "3.0KB"]
                                              [3000000, "3.0MB"]
                                              [3000000000, "3.0GB"]
