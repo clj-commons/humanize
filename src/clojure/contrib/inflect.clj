@@ -61,7 +61,6 @@
                                {
                                 "ox" "oxen",
                                 "child" "children",
-                                "brother" "brethen",
                                 "man" "men",
                                 "woman" "women",
                                 "foot" "feet",
