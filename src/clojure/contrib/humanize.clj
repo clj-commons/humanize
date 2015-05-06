@@ -5,8 +5,8 @@
             [clj-time.core :refer [date-time interval in-seconds
                                    in-minutes in-hours in-days
                                    in-weeks in-months in-years]]
-            [clj-time.local :refer :all]
-            [clj-time.coerce :refer :all]))
+            [clj-time.local :refer [local-now]]
+            [clj-time.coerce :refer [to-date-time to-string]]))
 
 (defn intcomma
   "Converts an integer to a string containing commas. every three digits.
