@@ -192,7 +192,7 @@
      (<= coll-length maximum-display) (let [before-last (take (dec coll-length) coll)
                                             last-item (last coll)]
                                         (str (join (interpose ", " before-last))
-                                             " and " last-item))
+                                             ", and " last-item))
 
      (> coll-length maximum-display) (let [display-coll (take maximum-display coll)
                                            remaining (- coll-length maximum-display)
@@ -202,12 +202,12 @@
                                                                                                 truncate-noun)))
                                            ]
                                        (str (join (interpose ", " display-coll))
-                                            " and " last-item))
+                                            ", and " last-item))
 
      ;; TODO: shouldn't reach here, throw exception
      :else coll-length)))
 
-(defn datetime 
+(defn datetime
   "Given a datetime or date, return a human-friendly representation
    of the amount of time elapsed. "
   [then-dt & {:keys [now-dt suffix]

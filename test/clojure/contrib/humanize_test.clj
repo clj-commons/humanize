@@ -110,22 +110,22 @@
       (is (= (oxford [(items 0)]) (items 0))))
 
     (testing "should return items separated by `and' when given a list of values"
-      (is (= (oxford (take 2 items)) (str (items 0) " and " (items 1))))
+      (is (= (oxford (take 2 items)) (str (items 0) ", and " (items 1))))
       (is (= (oxford (take 3 items)) (str (items 0) ", "
-                                          (items 1) " and " (items 2))))
+                                          (items 1) ", and " (items 2))))
       (is (= (oxford (take 4 items)) (str (items 0) ", "
                                           (items 1) ", "
-                                          (items 2) " and " (items 3)))))
+                                          (items 2) ", and " (items 3)))))
 
     (testing "should truncate a large list of items with proper pluralization"
       (is (= (oxford (take 5 items)) (str (items 0) ", "
                                           (items 1) ", "
                                           (items 2) ", "
-                                          (items 3) " and " 1 " other")))
+                                          (items 3) ", and " 1 " other")))
       (is (= (oxford (take 5 items)
                      :maximum-display 2)
              (str (items 0) ", "
-                  (items 1) " and " 3 " others"))))
+                  (items 1) ", and " 3 " others"))))
 
     (testing "should accept custom trucation strings"
       (let [truncate-noun "fruit"]
@@ -133,11 +133,11 @@
                     :truncate-noun truncate-noun)
             (str (items 0) ", "
                  (items 1) ", "
-                 (items 2) " and " 2 " other " (pluralize-noun 2 truncate-noun)))
+                 (items 2) ", and " 2 " other " (pluralize-noun 2 truncate-noun)))
         (is (oxford (take 3 items)
                     :truncate-string truncate-noun)
             (str (items 0) ", "
-                 (items 1) " and " (items 2)))))))
+                 (items 1) ", and " (items 2)))))))
 
 (deftest datetime-test
   (testing "should return a moment ago if the difference is less then a sec."

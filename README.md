@@ -130,16 +130,16 @@ limit.
 
 ```clojure
 user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango"])
-"apple, orange and mango"
+"apple, orange, and mango"
 
 user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango" "pear"]
                                        :maximum-display 2)
-"apple, orange and 2 others"
+"apple, orange, and 2 others"
 
 user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango" "pear"]
                                        :maximum-display 2
                                        :truncate-noun "fruit")
-"apple, orange and 2 other fruits"
+"apple, orange, and 2 other fruits"
 ```
 
 ### pluralize-noun
