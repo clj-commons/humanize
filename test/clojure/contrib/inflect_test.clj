@@ -20,6 +20,7 @@
   (testing "Testing nounse ending in F o FE"
     (is (= (pluralize-noun 2 "life") "lives"))
     (is (= (pluralize-noun 2 "thief") "thieves"))
+    (is (= (pluralize-noun 2 "chief") "chiefs"))
     (is (= (pluralize-noun 2 "roof") "roofs")))
 
   (testing "Testing general nouns."

@@ -147,8 +147,8 @@ user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango" "pear"]
 Return the pluralized noun if the given number is greater than 1.
 
 ```clojure
-user> (clojure.contrib.inflect/pluralize-noun 2 "theif" )
-"theives"
+user> (clojure.contrib.inflect/pluralize-noun 2 "thief" )
+"thieves"
 
 user> (clojure.contrib.inflect/pluralize-noun 3 "tomato" )
 "tomatoes"

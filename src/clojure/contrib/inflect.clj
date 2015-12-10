@@ -78,6 +78,7 @@
                                 "cliff" "cliffs",
                                 "ref" "refs",
                                 "roof" "roofs",
+                                "chief" "chiefs",
                                 }
                                )
 
