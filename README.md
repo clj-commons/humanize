@@ -4,6 +4,12 @@
 A Clojure library to produce human readable strings for numbers, dates
 based on similar libraries in other languages
 
+## Leiningen
+
+__([via Clojars](https://clojars.org/clojure-humanize))__
+
+[![Clojars Project](http://clojars.org/clojure-humanize/latest-version.svg)](http://clojars.org/clojure-humanize)
+
 ## Usage
 
 * [numberword](#numberword)
