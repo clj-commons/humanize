@@ -18,7 +18,7 @@
 #?(:clj  (def num-format format)
    :cljs (def num-format #(gstring/format %1 %2)))
 
-#?(:cljs (def expt (.-exp js/Math)))
+#?(:cljs (def expt (.-pow js/Math)))
 #?(:cljs (def floor (.-floor js/Math)))
 #?(:cljs (def round (.-round js/Math)))
 #?(:cljs (def abs (.-abs js/Math)))
@@ -27,10 +27,11 @@
    :cljs (def log (.-log js/Math)))
 
 #?(:clj (def log10 #(java.lang.Math/log10 %))
-   :cljs (def log10 #(/ (.log js/Math %) js/Math.LN10)))
+   :cljs (def log10 #(/ (.round js/Math (* 100000 (/ (.log js/Math %) js/Math.LN10)))
+                        100000)))                           ;; FIXME implement proper rounding
 
 #?(:clj (def char->int #(Character/getNumericValue %))
-   :cljs (def char->int #(.charCodeAt % 0)))
+   :cljs (def char->int #(int %)))
 
 (defn intcomma
   "Converts an integer to a string containing commas. every three digits.
@@ -80,29 +81,21 @@
    becomes '1.2 million' and '1200000000' becomes '1.2 billion'.  Supports up to
    decillion (33 digits) and googol (100 digits)."
   [num & {:keys [format] :or {format "%.1f"}}]
-  (let [human-pows {
-                    0 "",
-                    6 " million",
-                    9  " billion",
-                    12  " trillion",
-                    15  " quadrillion",
-                    18 " quintillion",
-                    21  " sextillion",
-                    24  " septillion",
-                    27 " octillion",
-                    30  " nonillion",
-                    33  " decillion",
-                    100 " googol",
-                    }
-
+  (let [human-pows [[0 ""]
+                    [6 " million"]
+                    [9 " billion"]
+                    [12 " trillion"]
+                    [15 " quadrillion"]
+                    [18 " quintillion"]
+                    [21 " sextillion"]
+                    [24 " septillion"]
+                    [27 " octillion"]
+                    [30 " nonillion"]
+                    [33 " decillion"]
+                    [100 " googol"]]
         base-pow  (int (floor (log10 num)))
-        base-pow  (if (contains? human-pows base-pow)
-                    base-pow
-                    (last (remove #(> % base-pow) (sort (keys human-pows)))))
-
-        suffix (get human-pows base-pow)
-        value (float (/ num (expt 10 base-pow)))
-        ]
+        [base-pow suffix] (first (filter (fn [[base _]] (>= base-pow base)) (reverse human-pows)))
+        value (float (/ num (expt 10 base-pow)))]
     (str (num-format format value) suffix)))
 
 
@@ -126,7 +119,7 @@
 
   (let [digitcnt (int (log10 num))
         divisible? (fn [num div] (zero? (rem num div)))
-        n-digit (fn [num n] (char->int (.charAt (str num) n)))]
+        n-digit (fn [num n] (char->int (.charAt (str num) n)))] ;; TODO rename
 
     (cond
      ;; handle million part

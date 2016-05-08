@@ -14,7 +14,7 @@
             #?(:clj  [clj-time.coerce  :refer [to-date-time to-string]]
                :cljs [cljs-time.coerce :refer [to-date-time to-string]])))
 
-#?(:cljs (def expt (.-exp js/Math)))
+#?(:cljs (def expt (.-pow js/Math)))
 
 (deftest intcomma-test
   (testing "Testing intcomma function with expected data."
