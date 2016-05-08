@@ -1,12 +1,36 @@
 (ns clojure.contrib.humanize
-  (:require [clojure.math.numeric-tower :refer :all]
-            [clojure.contrib.inflect :refer :all]
+  (:require #?(:clj  [clojure.math.numeric-tower :refer [expt floor round abs]])
+            [clojure.contrib.inflect :refer [pluralize-noun in?]]
             [clojure.string :refer [join]]
-            [clj-time.core :refer [date-time interval in-seconds
-                                   in-minutes in-hours in-days
-                                   in-weeks in-months in-years]]
-            [clj-time.local :refer [local-now]]
-            [clj-time.coerce :refer [to-date-time to-string]]))
+            #?(:clj  [clj-time.core  :refer [date-time interval in-seconds
+                                             in-minutes in-hours in-days
+                                             in-weeks in-months in-years]]
+               :cljs [cljs-time.core :refer [date-time interval in-seconds
+                                             in-minutes in-hours in-days
+                                             in-weeks in-months in-years]])
+            #?(:cljs [goog.string :as gstring])
+            #?(:cljs [goog.string.format])
+            #?(:clj  [clj-time.local  :refer [local-now]]
+               :cljs [cljs-time.local :refer [local-now]])
+            #?(:clj  [clj-time.coerce  :refer [to-date-time to-string]]
+               :cljs [cljs-time.coerce :refer [to-date-time to-string]])))
+
+#?(:clj  (def num-format format)
+   :cljs (def num-format #(gstring/format %1 %2)))
+
+#?(:cljs (def expt (.-exp js/Math)))
+#?(:cljs (def floor (.-floor js/Math)))
+#?(:cljs (def round (.-round js/Math)))
+#?(:cljs (def abs (.-abs js/Math)))
+
+#?(:clj (def log #(java.lang.Math/log %))
+   :cljs (def log (.-log js/Math)))
+
+#?(:clj (def log10 #(java.lang.Math/log10 %))
+   :cljs (def log10 #(/ (.log js/Math %) js/Math.LN10)))
+
+#?(:clj (def char->int #(Character/getNumericValue %))
+   :cljs (def char->int #(.charCodeAt % 0)))
 
 (defn intcomma
   "Converts an integer to a string containing commas. every three digits.
@@ -47,8 +71,8 @@
         (str num (ordinals remainder-10)))))
 
 (defn logn [num base]
-  (/ (round (java.lang.Math/log num))
-     (round (java.lang.Math/log base))))
+  (/ (round (log num))
+     (round (log base))))
 
 (defn intword
   "Converts a large integer to a friendly text representation. Works best for
@@ -71,7 +95,7 @@
                     100 " googol",
                     }
 
-        base-pow  (int (floor (java.lang.Math/log10 num)))
+        base-pow  (int (floor (log10 num)))
         base-pow  (if (contains? human-pows base-pow)
                     base-pow
                     (last (remove #(> % base-pow) (sort (keys human-pows)))))
@@ -79,7 +103,7 @@
         suffix (get human-pows base-pow)
         value (float (/ num (expt 10 base-pow)))
         ]
-    (clojure.core/format (str format "%s") value suffix)))
+    (str (num-format format value) suffix)))
 
 
 (def ^:private numap
@@ -100,9 +124,9 @@
   (if (zero? num)
     "zero"
 
-  (let [digitcnt (int (Math/log10 num))
+  (let [digitcnt (int (log10 num))
         divisible? (fn [num div] (zero? (rem num div)))
-        n-digit (fn [num n] (Character/getNumericValue (.charAt (str num) n)))]
+        n-digit (fn [num n] (char->int (.charAt (str num) n)))]
 
     (cond
      ;; handle million part
@@ -159,7 +183,7 @@
         value (float (/ bytes (expt base base-pow)))
         ]
 
-    (clojure.core/format (str format "%s") value suffix))))
+    (str (num-format format value) suffix))))
 
 (defn truncate
   "Truncate a string with suffix (ellipsis by default) if it is

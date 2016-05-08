@@ -1,12 +1,20 @@
 (ns clojure.contrib.humanize-test
-  (:require [clojure.test :refer :all]
-            [clojure.contrib.humanize :refer :all]
-            [clojure.contrib.inflect :refer :all]
-            [clojure.math.numeric-tower :refer :all]
-            [clj-time.core :refer [now from-now seconds minutes
-                                   hours days weeks months years]]
-            [clj-time.local :refer :all]
-            [clj-time.coerce :refer :all]))
+  (:require #?(:clj  [clojure.test :refer :all]
+               :cljs [cljs.test :refer-macros [deftest testing is]])
+            [clojure.contrib.humanize :refer [intcomma ordinal intword numberword
+                                              filesize truncate oxford datetime]]
+            [clojure.contrib.inflect :refer [pluralize-noun]]
+            #?(:clj [clojure.math.numeric-tower :refer [expt]])
+            #?(:clj  [clj-time.core  :refer [now from-now seconds minutes
+                                             hours days weeks months years]]
+               :cljs [cljs-time.core :refer [now from-now seconds minutes
+                                             hours days weeks months years]])
+            #?(:clj  [clj-time.local  :refer [local-now]]
+               :cljs [cljs-time.local :refer [local-now]])
+            #?(:clj  [clj-time.coerce  :refer [to-date-time to-string]]
+               :cljs [cljs-time.coerce :refer [to-date-time to-string]])))
+
+#?(:cljs (def expt (.-exp js/Math)))
 
 (deftest intcomma-test
   (testing "Testing intcomma function with expected data."
