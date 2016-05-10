@@ -26,9 +26,15 @@
 #?(:clj (def log #(java.lang.Math/log %))
    :cljs (def log (.-log js/Math)))
 
+#?(:cljs (def ^:private rounding-const 1000000))
+
 #?(:clj (def log10 #(java.lang.Math/log10 %))
-   :cljs (def log10 #(/ (.round js/Math (* 100000 (/ (.log js/Math %) js/Math.LN10)))
-                        100000)))                           ;; FIXME implement proper rounding
+   :cljs (def log10 (or (.-log10 js/Math)                   ;; prefer native implementation
+                        #(/ (.round js/Math
+                                    (* rounding-const
+                                       (/ (.log js/Math %)
+                                          js/Math.LN10)))
+                            rounding-const))))              ;; FIXME rounding
 
 #?(:clj (def char->int #(Character/getNumericValue %))
    :cljs (def char->int #(int %)))
