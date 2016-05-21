@@ -4,20 +4,18 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.8.51"]
                  [org.clojure/math.numeric-tower "0.0.4"]
                  [clj-time "0.11.0"]
                  [com.andrewmcveigh/cljs-time "0.4.0"]]
-  :plugins [[lein-cljsbuild "1.1.3"]]
-  :cljsbuild {:builds
-                             {:test
-                              {:source-paths ["src" "test"]
-                               :compiler
-                                             {:optimizations :whitespace
-                                              :pretty-print true
-                                              :output-dir "target/js/test"
-                                              :output-to "target/humanize-test.js"
-                                              :source-map "target/humanize-test.js.map"}}}
+  :profiles {:dev {:dependencies [[org.clojure/clojurescript "1.8.51"]]
+                   :plugins [[lein-cljsbuild "1.1.3"]]}}
+  :cljsbuild {:builds {:test
+                       {:source-paths ["src" "test"]
+                        :compiler {:optimizations :whitespace
+                                   :pretty-print true
+                                   :output-dir "target/js/test"
+                                   :output-to "target/humanize-test.js"
+                                   :source-map "target/humanize-test.js.map"}}}
               :test-commands {"cljs" ["phantomjs"
                                       "phantom/unit-test.js"
                                       "phantom/unit-test.html"]}})
