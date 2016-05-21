@@ -187,6 +187,19 @@ user> (clojure.contrib.humanize/datetime (plus (now) (years -7)))
 
 ```
 
+## Running Tests
+
+Test are cross runtime and are organized using the same pattern found in [route-ccrs](https://github.com/lymingtonprecision/route-ccrs).
+
+Running them on the `java` runtime:
+
+`lein test clojure.contrib.cljc-test`
+
+And on the `javascript` runtime (requires [phantomjs](http://phantomjs.org/)):
+
+`lein cljsbuild test`
+
+
 ## TODO
 
 + Add other missing functions
