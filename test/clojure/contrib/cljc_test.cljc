@@ -17,3 +17,5 @@
   (test/run-tests
     'clojure.contrib.humanize-test
     'clojure.contrib.inflect-test))
+
+#?(:clj (defn test-ns-hook [] (test-runner)))
