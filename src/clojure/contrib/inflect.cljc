@@ -1,6 +1,5 @@
 (ns clojure.contrib.inflect
   (:require [clojure.string :refer [ends-with?]]))
-  ;;(:require [clojure.contrib.inflect :refer :all]))
 
 (defn in? [x coll]
   "Return true if x is in coll, else false. "
