@@ -1,5 +1,5 @@
-(ns clojure.contrib.inflect)
-  ;;(:require [clojure.contrib.inflect :refer :all]))
+(ns clojure.contrib.inflect
+  (:require [clojure.string :refer [ends-with?]]))
 
 (defn in? [x coll]
   "Return true if x is in coll, else false. "
@@ -35,22 +35,22 @@
                          (fn [noun] (@*pluralize-noun-exceptions* noun)))
 
 (add-pluralize-noun-rule "For nouns ending within consonant + y, suffixes `ies' "
-                         (fn [noun] (and (.endsWith noun "y")
+                         (fn [noun] (and (ends-with? noun "y")
                                          (not (boolean (in?  (-> noun butlast last) ;; before-last char
                                                              [\a \e \i \o \u])))))
                          (fn [noun] (str (-> noun butlast clojure.string/join) "ies")))
 
 (add-pluralize-noun-rule "For nouns ending with ss, x, z, ch or sh, suffixes `es.'"
-                         (fn [noun] (some #(.endsWith noun %)
+                         (fn [noun] (some #(ends-with? noun %)
                                           ["ss" "x" "z" "ch" "sh"]))
                          (fn [noun] (str noun "es")))
 
 (add-pluralize-noun-rule "For nouns ending with `f', suffixes `ves'"
-                         (fn [noun] (.endsWith noun "f"))
+                         (fn [noun] (ends-with? noun "f"))
                          (fn [noun] (str (-> noun butlast clojure.string/join) "ves")))
 
 (add-pluralize-noun-rule "For nouns ending with `fe', suffixes `ves'"
-                         (fn [noun] (.endsWith noun "fe"))
+                         (fn [noun] (ends-with? noun "fe"))
                          (fn [noun] (str (-> noun butlast butlast clojure.string/join) "ves")))
 
 (add-pluralize-noun-rule "Always append `s' at the end of noun."

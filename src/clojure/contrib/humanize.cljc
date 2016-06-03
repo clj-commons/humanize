@@ -1,12 +1,43 @@
 (ns clojure.contrib.humanize
-  (:require [clojure.math.numeric-tower :refer :all]
-            [clojure.contrib.inflect :refer :all]
+  (:require #?(:clj  [clojure.math.numeric-tower :refer [expt floor round abs]])
+            [clojure.contrib.inflect :refer [pluralize-noun in?]]
             [clojure.string :refer [join]]
-            [clj-time.core :refer [date-time interval in-seconds
-                                   in-minutes in-hours in-days
-                                   in-weeks in-months in-years]]
-            [clj-time.local :refer [local-now]]
-            [clj-time.coerce :refer [to-date-time to-string]]))
+            #?(:clj  [clj-time.core  :refer [date-time interval in-seconds
+                                             in-minutes in-hours in-days
+                                             in-weeks in-months in-years]]
+               :cljs [cljs-time.core :refer [date-time interval in-seconds
+                                             in-minutes in-hours in-days
+                                             in-weeks in-months in-years]])
+            #?(:cljs [goog.string :as gstring])
+            #?(:cljs [goog.string.format])
+            #?(:clj  [clj-time.local  :refer [local-now]]
+               :cljs [cljs-time.local :refer [local-now]])
+            #?(:clj  [clj-time.coerce  :refer [to-date-time to-string]]
+               :cljs [cljs-time.coerce :refer [to-date-time to-string]])))
+
+#?(:clj  (def ^:private num-format format)
+   :cljs (def ^:private num-format #(gstring/format %1 %2)))
+
+#?(:cljs (def ^:private expt (.-pow js/Math)))
+#?(:cljs (def ^:private floor (.-floor js/Math)))
+#?(:cljs (def ^:private round (.-round js/Math)))
+#?(:cljs (def ^:private abs (.-abs js/Math)))
+
+#?(:clj  (def ^:private log #(java.lang.Math/log %))
+   :cljs (def ^:private log (.-log js/Math)))
+
+#?(:cljs (def ^:private rounding-const 1000000))
+
+#?(:clj  (def ^:private log10 #(java.lang.Math/log10 %))
+   :cljs (def ^:private log10 (or (.-log10 js/Math)                   ;; prefer native implementation
+                        #(/ (.round js/Math
+                                    (* rounding-const
+                                       (/ (.log js/Math %)
+                                          js/Math.LN10)))
+                            rounding-const))))              ;; FIXME rounding
+
+#?(:clj  (def ^:private char->int #(Character/getNumericValue %))
+   :cljs (def ^:private char->int #(int %)))
 
 (defn intcomma
   "Converts an integer to a string containing commas. every three digits.
@@ -47,8 +78,22 @@
         (str num (ordinals remainder-10)))))
 
 (defn logn [num base]
-  (/ (round (java.lang.Math/log num))
-     (round (java.lang.Math/log base))))
+  (/ (round (log num))
+     (round (log base))))
+
+
+(def ^:private human-pows [[100 " googol"]
+                           [33 " decillion"]
+                           [30 " nonillion"]
+                           [27 " octillion"]
+                           [24 " septillion"]
+                           [21 " sextillion"]
+                           [18 " quintillion"]
+                           [15 " quadrillion"]
+                           [12 " trillion"]
+                           [9 " billion"]
+                           [6 " million"]
+                           [0 ""]])
 
 (defn intword
   "Converts a large integer to a friendly text representation. Works best for
@@ -56,30 +101,10 @@
    becomes '1.2 million' and '1200000000' becomes '1.2 billion'.  Supports up to
    decillion (33 digits) and googol (100 digits)."
   [num & {:keys [format] :or {format "%.1f"}}]
-  (let [human-pows {
-                    0 "",
-                    6 " million",
-                    9  " billion",
-                    12  " trillion",
-                    15  " quadrillion",
-                    18 " quintillion",
-                    21  " sextillion",
-                    24  " septillion",
-                    27 " octillion",
-                    30  " nonillion",
-                    33  " decillion",
-                    100 " googol",
-                    }
-
-        base-pow  (int (floor (java.lang.Math/log10 num)))
-        base-pow  (if (contains? human-pows base-pow)
-                    base-pow
-                    (last (remove #(> % base-pow) (sort (keys human-pows)))))
-
-        suffix (get human-pows base-pow)
-        value (float (/ num (expt 10 base-pow)))
-        ]
-    (clojure.core/format (str format "%s") value suffix)))
+  (let [base-pow (int (floor (log10 num)))
+        [base-pow suffix] (first (filter (fn [[base _]] (>= base-pow base)) human-pows))
+        value (float (/ num (expt 10 base-pow)))]
+    (str (num-format format value) suffix)))
 
 
 (def ^:private numap
@@ -100,9 +125,9 @@
   (if (zero? num)
     "zero"
 
-  (let [digitcnt (int (Math/log10 num))
+  (let [digitcnt (int (log10 num))
         divisible? (fn [num div] (zero? (rem num div)))
-        n-digit (fn [num n] (Character/getNumericValue (.charAt (str num) n)))]
+        n-digit (fn [num n] (char->int (.charAt (str num) n)))] ;; TODO rename
 
     (cond
      ;; handle million part
@@ -159,7 +184,7 @@
         value (float (/ bytes (expt base base-pow)))
         ]
 
-    (clojure.core/format (str format "%s") value suffix))))
+    (str (num-format format value) suffix))))
 
 (defn truncate
   "Truncate a string with suffix (ellipsis by default) if it is

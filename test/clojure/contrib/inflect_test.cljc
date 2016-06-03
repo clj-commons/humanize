@@ -1,8 +1,7 @@
 (ns clojure.contrib.inflect-test
-  (:require [clojure.test :refer :all]
-            [clojure.contrib.humanize :refer :all]
-            [clojure.contrib.inflect :refer :all]
-            [clojure.math.numeric-tower :refer :all]))
+  (:require #?(:clj  [clojure.test :refer :all]
+               :cljs [cljs.test :refer-macros [deftest testing is]])
+            [clojure.contrib.inflect :refer [pluralize-noun]]))
 
 (deftest pluralize-noun-test
   (testing "Testing nouns ending in a sibilant sound."
