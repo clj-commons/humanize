@@ -1,4 +1,4 @@
-(defproject bilus/clojure-humanize "0.1.1"
+(defproject bilus/clojure-humanize "0.2.0"
   :description "produce human readable strings in clojure"
   :url "https://github.com/trhura/clojure-humanize"
   :license {:name "Eclipse Public License"
