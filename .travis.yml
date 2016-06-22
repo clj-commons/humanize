@@ -1,2 +1,3 @@
 language: clojure
 
+script: lein do test clojure.contrib.cljc-test, cljsbuild test

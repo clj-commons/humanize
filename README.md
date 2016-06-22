@@ -1,7 +1,9 @@
 
 # clojure-humanize
 
-A Clojure library to produce human readable strings for numbers, dates
+[![Build Status](https://travis-ci.org/trhura/clojure-humanize.svg?branch=master)](https://travis-ci.org/trhura/clojure-humanize)
+
+A Clojure(script) library to produce human readable strings for numbers, dates
 based on similar libraries in other languages
 
 ## Leiningen
