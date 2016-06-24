@@ -2,7 +2,8 @@
   (:require #?(:clj  [clojure.test :refer :all]
                :cljs [cljs.test :refer-macros [deftest testing is]])
             [clojure.contrib.humanize :refer [intcomma ordinal intword numberword
-                                              filesize truncate oxford datetime]]
+                                              filesize truncate oxford datetime
+                                              duration-terms duration]]
             [clojure.contrib.inflect :refer [pluralize-noun]]
             #?(:clj [clojure.math.numeric-tower :refer [expt]])
             #?(:clj  [clj-time.core  :refer [now from-now seconds minutes
@@ -194,3 +195,28 @@
   ;;   (is (=  (datetime (now) :now-dt (-> (* 1 1000) years from-now)) "1 millennium ago")))
 
   )
+
+(deftest durations
+  (testing "duration to terms"
+    (are [duration terms] (= terms (duration-terms duration))
+                          ;; Less than a second is ignored
+                          0 []
+                          999 []
+                          1000 [[1 "second"]]
+                          ;; Remaining milliseconds after seconds are gnored
+                          1500 [[1 "second"]]
+                          ;; 0 periods are excluded
+                          10805000 [[3 "hour"]
+                                    [5 "second"]]))
+  (testing "duration to string"
+    (are [ms expected] (= expected (duration ms))
+                       0 "less than a second"
+                       999 "less than a second"
+                       1000 "one second"
+                       10805000 "three hours, five seconds")
+
+    (are [ms options expected] (= expected (duration ms options))
+                               999 {:short-text "just now"} "just now"
+                               10805000 {:number-format str} "3 hours, 5 seconds"
+                               510805000 {:number-format str
+                                          :list-format oxford} "5 days, 21 hours, 53 minutes, and 25 seconds")))

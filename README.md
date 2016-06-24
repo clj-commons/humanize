@@ -23,6 +23,7 @@ __([via Clojars](https://clojars.org/clojure-humanize))__
 * [oxford](#oxford)
 * [pluralize-noun](#pluralize-noun)
 * [datetime](#datetime)
+* [duration](#duration)
 
 ### numberword
 
@@ -152,22 +153,22 @@ user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango" "pear"]
 
 ### pluralize-noun
 
-Return the pluralized noun if the given number is greater than 1.
+Return the pluralized noun if the given number is not 1.
 
 ```clojure
-user> (clojure.contrib.inflect/pluralize-noun 2 "thief" )
+user> (clojure.contrib.inflect/pluralize-noun 2 "thief")
 "thieves"
 
-user> (clojure.contrib.inflect/pluralize-noun 3 "tomato" )
+user> (clojure.contrib.inflect/pluralize-noun 3 "tomato")
 "tomatoes"
 
-user> (clojure.contrib.inflect/pluralize-noun 4 "roof" )
+user> (clojure.contrib.inflect/pluralize-noun 4 "roof")
 "roofs"
 
-user> (clojure.contrib.inflect/pluralize-noun 5 "person" )
+user> (clojure.contrib.inflect/pluralize-noun 5 "person")
 "people"
 
-user> (clojure.contrib.inflect/pluralize-noun 6 "buzz" )
+user> (clojure.contrib.inflect/pluralize-noun 6 "buzz")
 "buzzes"
 
 ```
@@ -175,7 +176,7 @@ user> (clojure.contrib.inflect/pluralize-noun 6 "buzz" )
 ### datetime
 
 Given a datetime or date, return a human-friendly representation
-of the amount of time elapsed.
+of the amount of time elapsed, relative to the current time.
 
 ```clojure
 user> (clojure.contrib.humanize/datetime (plus (now) (seconds -30)))
@@ -186,6 +187,26 @@ user> (clojure.contrib.humanize/datetime (plus (now) (years -20)))
 
 user> (clojure.contrib.humanize/datetime (plus (now) (years -7)))
 "7 years ago"
+
+```
+
+### duration
+
+Given a duration in milliseconds, return a human-friendly
+representation of the amount of time passed.
+
+```clojure
+user> (clojure.contrib.humanize/duration 2000)
+"two seconds"
+
+user> (clojure.contrib.humanize/duration 325100)
+"five minutes, twenty-five seconds"
+
+user> (clojure.contrib.humanize/duration 500)
+"less than a second"
+
+user> (clojure.contrib.humanize/duration 325100 {:number-format str})
+=> "5 minutes, 25 seconds"
 
 ```
 
