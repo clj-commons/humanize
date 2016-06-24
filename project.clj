@@ -5,9 +5,9 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/math.numeric-tower "0.0.4"]
-                 [clj-time "0.11.0"]
+                 [clj-time "0.12.0"]
                  [com.andrewmcveigh/cljs-time "0.4.0"]]
-  :profiles {:dev {:dependencies [[org.clojure/clojurescript "1.8.51"]]
+  :profiles {:dev {:dependencies [[org.clojure/clojurescript "1.9.93"]]
                    :plugins [[lein-cljsbuild "1.1.3"]]}}
   :cljsbuild {:builds {:test
                        {:source-paths ["src" "test"]
