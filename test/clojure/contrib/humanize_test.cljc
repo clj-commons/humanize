@@ -1,6 +1,6 @@
 (ns clojure.contrib.humanize-test
   (:require #?(:clj  [clojure.test :refer :all]
-               :cljs [cljs.test :refer-macros [deftest testing is]])
+               :cljs [cljs.test :refer-macros [deftest testing is are]])
             [clojure.contrib.humanize :refer [intcomma ordinal intword numberword
                                               filesize truncate oxford datetime
                                               duration-terms duration]]
