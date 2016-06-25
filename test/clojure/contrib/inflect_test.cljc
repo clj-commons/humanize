@@ -13,9 +13,9 @@
 
   (testing "Zero is considered plural"
     (are [noun expected-noun] (= expected-noun (pluralize-noun 0 noun))
-               "kiss" "kisses"
-               "robot" "robots"
-                "ox" "oxen"))
+                              "kiss" "kisses"
+                              "robot" "robots"
+                              "ox" "oxen"))
 
   (testing "Testing nouns ending in a sibilant sound."
     (is (= (pluralize-noun 2 "kiss") "kisses"))
