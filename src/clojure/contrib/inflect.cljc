@@ -13,6 +13,7 @@
 (defn pluralize-noun [count noun]
   "Return the pluralized noun if the `count' is
    not 1."
+  {:pre [(<= 0 count)]}
   (let [singular? (== count 1)]
     (if singular? noun ;; If singular, return noun
         (some (fn [[cond? result-fn]]
