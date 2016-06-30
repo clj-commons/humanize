@@ -3,7 +3,8 @@
                :cljs [cljs.test :refer-macros [deftest testing is are]])
             [clojure.contrib.humanize :refer [intcomma ordinal intword numberword
                                               filesize truncate oxford datetime
-                                              duration-terms duration]]
+                                              duration]
+             :as h]
             [clojure.contrib.inflect :refer [pluralize-noun]]
             #?(:clj [clojure.math.numeric-tower :refer [expt]])
             #?(:clj  [clj-time.core  :refer [now from-now seconds minutes
@@ -198,7 +199,7 @@
 
 (deftest durations
   (testing "duration to terms"
-    (are [duration terms] (= terms (duration-terms duration))
+    (are [duration terms] (= terms (#'h/duration-terms duration))
                           ;; Less than a second is ignored
                           0 []
                           999 []

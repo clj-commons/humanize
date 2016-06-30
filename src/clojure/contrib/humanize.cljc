@@ -307,17 +307,16 @@
    [(* 1000 60) "minute"]
    [1000 "second"]])
 
-(defn duration-terms
-  "Converts an duration, in milliseconds, to a set of terms describing the duration.
+(defn- duration-terms
+  "Converts a duration, in milliseconds, to a set of terms describing the duration.
   The terms are in descending order, largest period to smallest.
 
   Each term is a tuple of count and period name, e.g., `[5 \"second\"]`.
 
   After seconds are accounted for, remaining milliseconds are ignored."
-  {:added "0.2.1"}
-  [elapsed-ms]
-  {:pre [(<= 0 elapsed-ms)]}
-  (loop [remainder elapsed-ms
+  [duration-ms]
+  {:pre [(<= 0 duration-ms)]}
+  (loop [remainder duration-ms
          [[period-ms period-name] & more-periods] duration-periods
          terms []]
     (cond

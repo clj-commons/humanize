@@ -18,4 +18,8 @@
                                    :source-map "target/humanize-test.js.map"}}}
               :test-commands {"cljs" ["phantomjs"
                                       "phantom/unit-test.js"
-                                      "phantom/unit-test.html"]}})
+                                      "phantom/unit-test.html"]}}
+  :aliases {"test-all" ["do"
+                        "test" "clojure.contrib.cljc-test,"
+                        "cljsbuild" "test"
+                        ]})
