@@ -1,9 +1,22 @@
 (ns clojure.contrib.inflect-test
   (:require #?(:clj  [clojure.test :refer :all]
-               :cljs [cljs.test :refer-macros [deftest testing is]])
+               :cljs [cljs.test :refer-macros [deftest testing is are]])
             [clojure.contrib.inflect :refer [pluralize-noun]]))
 
 (deftest pluralize-noun-test
+
+  (testing "A count of one returns the standard value"
+    (are [noun] (= noun (pluralize-noun 1 noun))
+                "kiss"
+                "robot"
+                "ox"))
+
+  (testing "Zero is considered plural"
+    (are [noun expected-noun] (= expected-noun (pluralize-noun 0 noun))
+                              "kiss" "kisses"
+                              "robot" "robots"
+                              "ox" "oxen"))
+
   (testing "Testing nouns ending in a sibilant sound."
     (is (= (pluralize-noun 2 "kiss") "kisses"))
     (is (= (pluralize-noun 2 "phase") "phases"))
@@ -30,7 +43,8 @@
     (is (= (pluralize-noun 2 "pencil") "pencils")))
 
   (testing "Testing irregulars nouns"
-    (is (= (pluralize-noun 2 "ox") "oxen"))
-    (is (= (pluralize-noun 2 "moose") "moose"))
-    (is (= (pluralize-noun 2 "hero") "heroes")))
-  )
+    (are [noun expected-noun] (= expected-noun (pluralize-noun 2 noun))
+                              "ox" "oxen"
+                              "moose" "moose"
+                              "hero" "heroes"
+                              "cactus" "cactuses")))

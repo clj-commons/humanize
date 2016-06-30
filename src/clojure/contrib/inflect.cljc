@@ -1,4 +1,5 @@
 (ns clojure.contrib.inflect
+  "Functions and rules for pluralizing nouns."
   (:require [clojure.string :refer [ends-with?]]))
 
 (defn in? [x coll]
@@ -11,8 +12,9 @@
 
 (defn pluralize-noun [count noun]
   "Return the pluralized noun if the `count' is
-   greater than 1."
-  (let [singular? (<= count 1)]
+   not 1."
+  {:pre [(<= 0 count)]}
+  (let [singular? (== count 1)]
     (if singular? noun ;; If singular, return noun
         (some (fn [[cond? result-fn]]
                 (if (cond? noun)
@@ -99,6 +101,7 @@
                                 "zero" "zeroes",
                                 "echo" "echoes",
                                 "banjo" "banjoes",
+                                "cactus" "cactuses"
                                 }
                                )
 
@@ -118,3 +121,4 @@
                                 "plankton" "plankton",
                                 "squid" "squid",
                                 })
+

@@ -8,4 +8,4 @@ pom.xml.asc
 /.lein-*
 /.nrepl-port
 .idea/*
-clojure_humanize.iml
+*.iml
