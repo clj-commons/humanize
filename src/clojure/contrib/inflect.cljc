@@ -7,34 +7,45 @@
   ;; FIXME: duplicate
   (some #(= x %) coll))
 
-(def ^:dynamic *pluralize-noun-rules* (atom []))
-(def ^:dynamic *pluralize-noun-exceptions* (atom {}))
+(def ^:private pluralize-noun-rules (atom []))
+(def ^:private pluralize-noun-exceptions (atom {}))
 
 (defn pluralize-noun [count noun]
   "Return the pluralized noun if the `count' is
    not 1."
   {:pre [(<= 0 count)]}
   (let [singular? (== count 1)]
-    (if singular? noun ;; If singular, return noun
-        (some (fn [[cond? result-fn]]
+    (if singular?
+      noun                                                  ; If singular, return noun
+      (some (fn [[cond? result-fn]]
                 (if (cond? noun)
                   (result-fn noun)))
-              @*pluralize-noun-rules*))))
+            @pluralize-noun-rules))))
 
 (defn add-pluralize-noun-rule
+  "Adds a rule for pluralizing. The singular form of the noun is passed to the cond?
+  predicate and if that return a truthy value, the singular form is passed
+  to the result-fn to generate the plural form.
+
+  The rule description is for documentation only, it is ignored and may be nil."
   [rule-description cond? result-fn]
-  (swap! *pluralize-noun-rules*
-          conj
-          [cond? result-fn]))
+  (swap! pluralize-noun-rules
+         conj
+         [cond? result-fn]))
 
 (defn add-pluralize-noun-exceptions
+  "Adds some number of exception cases.
+
+   exceptions is a map from singular form to plural form.
+
+   The exception description is for documentation only, it is ignored and may be nil."
   [execption-description exceptions]
-  (swap! *pluralize-noun-exceptions* into exceptions))
+  (swap! pluralize-noun-exceptions into exceptions))
 
 ;; the order of rules is important
 (add-pluralize-noun-rule "For irregular nouns, use the exceptions."
-                         (fn [noun] (contains? @*pluralize-noun-exceptions* noun))
-                         (fn [noun] (@*pluralize-noun-exceptions* noun)))
+                         (fn [noun] (contains? @pluralize-noun-exceptions noun))
+                         (fn [noun] (@pluralize-noun-exceptions noun)))
 
 (add-pluralize-noun-rule "For nouns ending within consonant + y, suffixes `ies' "
                          (fn [noun] (and (ends-with? noun "y")
