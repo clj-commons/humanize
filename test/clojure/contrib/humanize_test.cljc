@@ -150,60 +150,48 @@
                  (items 1) ", and " (items 2)))))))
 
 (deftest datetime-test
-  (testing "should return a moment ago/in a moment if the difference is less then a sec."
-      (is (=  (datetime (now)) "a moment ago"))
-      (is (=  (datetime (-> 600 millis from-now)) "in a moment")))
+  (let [past (fn [n unit] (datetime (now) :now-dt (-> n unit from-now)))
+        future (fn [n unit] (datetime (-> n unit from-now) :now-dt (now)))]
+    (testing "date diff to text"
+      (are [expected diff] (= expected diff)
+                           "a moment ago" (datetime (now))
+                           "in a moment" (datetime (-> 500 millis from-now))
+                           "10 seconds ago" (past 10 seconds)
+                           "in 10 seconds" (future 10 seconds)
+                           "1 second ago" (past 1 seconds)
+                           "in 1 second" (future 1 seconds)
+                           "10 minutes ago" (past 10 minutes)
+                           "in 10 minutes" (future 10 minutes)
+                           "1 minute ago" (past 1 minutes)
+                           "in 1 minute" (future 1 minutes)
+                           "10 hours ago" (past 10 hours)
+                           "in 10 hours" (future 10 hours)
+                           "1 hour ago" (past 1 hours)
+                           "in 1 hour" (future 1 hours)
+                           "5 days ago" (past 5 days)
+                           "in 5 days" (future 5 days)
+                           "1 day ago" (past 1 days)
+                           "in 1 day" (future 1 days)
+                           "1 week ago" (past 1 weeks)
+                           "in 1 week" (future 1 weeks)
+                           "3 weeks ago" (past 3 weeks)
+                           "in 3 weeks" (future 3 weeks)
+                           "2 months ago" (past 10 weeks)
+                           "in 2 months" (future 10 weeks)
+                           "10 months ago" (past 10 months)
+                           "in 10 months" (future 10 months)
+                           "1 month ago" (past 1 months)
+                           "in 1 month" (future 1 months)
+                           "3 years ago" (past 3 years)
+                           "in 3 years" (future 3 years)
+                           "1 year ago" (past 1 years)
+                           "in 1 year" (future 1 years)
+                           "3 decades ago" (past 30 years)
+                           "in 3 decades" (future 30 years)
+                           "1 decade ago" (past 10 years)
+                           "in 1 decade" (future 10 years)))))
 
-  (testing "should return _ seconds ago/in _ seconds if the difference is less then a min."
-      (is (=  (datetime (now) :now-dt (-> 10 seconds from-now)) "10 seconds ago"))
-      (is (=  (datetime (-> 10 seconds from-now) :now-dt (now)) "in 10 seconds"))
-      (is (=  (datetime (now) :now-dt (-> 1 seconds from-now)) "1 second ago"))
-      (is (=  (datetime (-> 1 seconds from-now) :now-dt (now)) "in 1 second")))
-
-  (testing "should return _ minutes ago/in if the difference is less then an hour."
-      (is (=  (datetime (now) :now-dt (-> 10 minutes from-now)) "10 minutes ago"))
-      (is (=  (datetime (-> 10 minutes from-now) :now-dt (now)) "in 10 minutes"))
-      (is (=  (datetime (now) :now-dt (-> 1 minutes from-now)) "1 minute ago"))
-      (is (=  (datetime (-> 1 minutes from-now) :now-dt (now)) "in 1 minute")))
-
-  (testing "should return _ hours ago/in if the difference is less then a day."
-      (is (=  (datetime (now) :now-dt (-> 10 hours from-now)) "10 hours ago"))
-      (is (=  (datetime (-> 10 hours from-now) :now-dt (now)) "in 10 hours"))
-      (is (=  (datetime (now) :now-dt (-> 1 hours from-now)) "1 hour ago"))
-      (is (=  (datetime (-> 1 hours from-now) :now-dt (now)) "in 1 hour")))
-
-  (testing "should return _ days ago/in if the difference is less then a week."
-      (is (=  (datetime (now) :now-dt (-> 5 days from-now)) "5 days ago"))
-      (is (=  (datetime (-> 5 days from-now) :now-dt (now)) "in 5 days"))
-      (is (=  (datetime (now) :now-dt (-> 1 days from-now)) "1 day ago"))
-      (is (=  (datetime (-> 1 days from-now) :now-dt (now)) "in 1 day")))
-
-  (testing "should return _ weeks ago/in if the difference is less then a month."
-    (is (=  (datetime (now) :now-dt (-> 10 days from-now)) "1 week ago"))
-    (is (=  (datetime (-> 10 days from-now) :now-dt (now)) "in 1 week"))
-    (is (=  (datetime (now) :now-dt (-> 3 weeks from-now)) "3 weeks ago"))
-    (is (=  (datetime (-> 3 weeks from-now) :now-dt (now)) "in 3 weeks")))
-
-  (testing "should return _ months ago/in if the difference is less then a year."
-    (is (=  (datetime (now) :now-dt (-> 10 weeks from-now)) "2 months ago"))
-    (is (=  (datetime (-> 10 weeks from-now) :now-dt (now)) "in 2 months"))
-    (is (=  (datetime (now) :now-dt (-> 10 months from-now)) "10 months ago"))
-    (is (=  (datetime (-> 10 months from-now) :now-dt (now)) "in 10 months"))
-    (is (=  (datetime (now) :now-dt (-> 1 months from-now)) "1 month ago"))
-    (is (=  (datetime (-> 1 months from-now) :now-dt (now)) "in 1 month")))
-
-  (testing "should return _ years ago if the difference is less then a decade."
-    (is (=  (datetime (now) :now-dt (-> 3 years from-now)) "3 years ago"))
-    (is (=  (datetime (-> 3 years from-now) :now-dt (now)) "in 3 years"))
-    (is (=  (datetime (now) :now-dt (-> 1 years from-now)) "1 year ago"))
-    (is (=  (datetime (-> 1 years from-now) :now-dt (now)) "in 1 year")))
-
-  (testing "should return _ decade ago if the difference is less then a century."
-    (is (=  (datetime (now) :now-dt (-> (* 3 10) years  from-now)) "3 decades ago"))
-    (is (=  (datetime (-> (* 3 10) years from-now) :now-dt (now)) "in 3 decades"))
-    (is (=  (datetime (now) :now-dt (-> 10 years from-now)) "1 decade ago"))
-    (is (=  (datetime (-> 10 years from-now) :now-dt (now)) "in 1 decade")))
-
+#_(deftest datetime-test
   ;; FIXME: BUG in joda
   ;; (testing "should return _ century ago if the difference is less then a millennium."
   ;;   (is (=  (datetime (now) :now-dt (-> (* 3 100) years from-now)) "3 centuries ago"))
