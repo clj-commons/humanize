@@ -198,18 +198,6 @@
                            "in 3 millennia" (future (* 3 1000) years)
                            "in 1 millenium" (future 1000 years)))))
 
-#_(deftest datetime-test
-  ;; FIXME: BUG in joda
-  ;; (testing "should return _ century ago if the difference is less then a millennium."
-  ;;   (is (=  (datetime (now) :now-dt (-> (* 3 100) years from-now)) "3 centuries ago"))
-  ;;   (is (=  (datetime (now) :now-dt (-> (* 1 100) years from-now)) "1 century ago")))
-
-  ;; (testing "should return _ millennia ago if the difference is less then 10 millennia."
-  ;;   (is (=  (datetime (now) :now-dt (-> (* 3 1000) years from-now)) "3 millennia ago"))
-  ;;   (is (=  (datetime (now) :now-dt (-> (* 1 1000) years from-now)) "1 millennium ago")))
-
-  )
-
 (deftest durations
   (testing "duration to terms"
     (are [duration terms] (= terms (#'h/duration-terms duration))
