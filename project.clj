@@ -1,4 +1,4 @@
-(defproject clojure-humanize "0.2.2"
+(defproject clojure-humanize "0.2.3-SNAPSHOT"
   :description "produce human readable strings in clojure"
   :url "https://github.com/trhura/clojure-humanize"
   :license {:name "Eclipse Public License"
