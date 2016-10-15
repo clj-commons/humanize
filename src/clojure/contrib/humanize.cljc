@@ -2,10 +2,10 @@
   (:require #?(:clj  [clojure.math.numeric-tower :refer [expt floor round abs]])
             [clojure.contrib.inflect :refer [pluralize-noun in?]]
             [clojure.string :refer [join]]
-            #?(:clj  [clj-time.core  :refer [date-time interval in-seconds
+            #?(:clj  [clj-time.core  :refer [after? date-time interval in-seconds
                                              in-minutes in-hours in-days
                                              in-weeks in-months in-years]]
-               :cljs [cljs-time.core :refer [date-time interval in-seconds
+               :cljs [cljs-time.core :refer [after? date-time interval in-seconds
                                              in-minutes in-hours in-days
                                              in-weeks in-months in-years]])
             #?(:cljs [goog.string :as gstring])
@@ -232,61 +232,69 @@
      ;; TODO: shouldn't reach here, throw exception
      :else coll-length)))
 
+(defmacro with-dt-diff [desc-diff diff desc-type future-time? prefix suffix]
+  `(let [d# (~desc-diff ~diff)
+        t# (pluralize-noun (~desc-diff ~diff) ~desc-type)]
+    (if ~future-time?
+      (str ~prefix " " d# " " t#)
+      (str d# " " t# " " ~suffix))))
+
+(macroexpand-1 '(with-dt-diff in-seconds 5 "second" true "foo" "bar"))
+
+(defn- in-decades [diff]
+  (/ (in-years diff) 10))
+
+(defn- in-centuries [diff]
+  (/ (in-years diff) 100))
+
+(defn- in-millennia [diff]
+  (/ (in-years diff) 1000))
+
 (defn datetime
   "Given a datetime or date, return a human-friendly representation
    of the amount of time elapsed. "
-  [then-dt & {:keys [now-dt suffix]
+  [then-dt & {:keys [now-dt suffix prefix]
               :or {now-dt (local-now)
-                   suffix  "ago"}}]
+                   suffix  "ago"
+                   prefix "in"}}]
   (let [then-dt (to-date-time then-dt)
         now-dt  (to-date-time now-dt)
-        diff    (interval then-dt now-dt)]
+        future-time? (after? then-dt now-dt)
+        diff (if future-time?
+               (interval now-dt then-dt)
+               (interval then-dt now-dt))]
     (cond
      ;; if the diff is less than a second
-     (<= (in-seconds diff) 0) (str "a moment " suffix)
+     (<= (in-seconds diff) 0) (if future-time?
+                                (str prefix " a moment")
+                                (str "a moment " suffix))
 
      ;; if the diff is less than a minute
-     (<= (in-minutes diff) 0) (str (in-seconds diff) " "
-                                   (pluralize-noun (in-seconds diff) "second")
-                                   " " suffix)
+     (<= (in-minutes diff) 0) (with-dt-diff in-seconds diff "second" future-time? prefix suffix)
 
      ;; if the diff is less than an hour
-     (<= (in-hours diff) 0) (str (in-minutes diff) " "
-                                 (pluralize-noun (in-minutes diff) "minute")
-                                 " " suffix)
+     (<= (in-hours diff) 0) (with-dt-diff in-minutes diff "minute" future-time? prefix suffix)
 
      ;; if the diff is less than a day
-     (<= (in-days diff) 0) (str (in-hours diff) " "
-                                (pluralize-noun (in-hours diff) "hour")
-                                " " suffix)
+     (<= (in-days diff) 0) (with-dt-diff in-hours diff "hour" future-time? prefix suffix)
 
      ;; if the diff is less than a week
-     (<= (in-weeks diff) 0) (str (in-days diff) " "
-                                 (pluralize-noun (in-days diff) "day")
-                                 " " suffix)
+     (<= (in-weeks diff) 0) (with-dt-diff in-days diff "day" future-time? prefix suffix)
 
      ;; if the diff is less than a month
-     (<= (in-months diff) 0) (str (in-weeks diff) " "
-                                  (pluralize-noun (in-weeks diff) "week")
-                                  " " suffix)
+     (<= (in-months diff) 0) (with-dt-diff in-weeks diff "week" future-time? prefix suffix)
 
      ;; if the diff is less than a year
-     (<= (in-years diff) 0) (str (in-months diff) " "
-                                 (pluralize-noun (in-months diff) "month")
-                                 " " suffix)
+     (<= (in-years diff) 0) (with-dt-diff in-months diff "month" future-time? prefix suffix)
 
      ;; if the diff is less than a decade
-     (< (in-years diff) 10) (str (in-years diff) " "
-                                 (pluralize-noun (in-years diff) "year")
-                                 " " suffix)
+     (< (in-decades diff) 1) (with-dt-diff in-years diff "year" future-time? prefix suffix)
 
      ;; if the diff is less than a century
-     (< (in-years diff) 100) (str (-> diff in-years (/ 10) long) " "
-                                   (pluralize-noun (-> diff in-years (/ 10) long) "decade")
-                                   " " suffix)
+     (< (in-centuries diff) 1) (with-dt-diff in-decades diff "decade" future-time? prefix suffix)
 
      ;; if the diff is less than a millennium
-     (< (in-years diff) 1000) (str (-> diff in-years (/ 100) long) " "
+     (< (in-millennia diff) 1) (str (-> diff in-years (/ 100) long) " "
                                     (pluralize-noun (-> diff in-years (/ 100) long) "century")
                                     " " suffix)
 

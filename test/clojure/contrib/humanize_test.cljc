@@ -7,7 +7,7 @@
              :as h]
             [clojure.contrib.inflect :refer [pluralize-noun]]
             #?(:clj [clojure.math.numeric-tower :refer [expt]])
-            #?(:clj  [clj-time.core  :refer [now from-now seconds minutes
+            #?(:clj  [clj-time.core  :refer [now from-now seconds millis minutes
                                              hours days weeks months years]]
                :cljs [cljs-time.core :refer [now from-now seconds minutes
                                              hours days weeks months years]])
@@ -150,41 +150,59 @@
                  (items 1) ", and " (items 2)))))))
 
 (deftest datetime-test
-  (testing "should return a moment ago if the difference is less then a sec."
-      (is (=  (datetime (now)) "a moment ago")))
+  (testing "should return a moment ago/in a moment if the difference is less then a sec."
+      (is (=  (datetime (now)) "a moment ago"))
+      (is (=  (datetime (-> 600 millis from-now)) "in a moment")))
 
-  (testing "should return _ seconds ago if the difference is less then a min."
+  (testing "should return _ seconds ago/in _ seconds if the difference is less then a min."
       (is (=  (datetime (now) :now-dt (-> 10 seconds from-now)) "10 seconds ago"))
-      (is (=  (datetime (now) :now-dt (-> 1 seconds from-now)) "1 second ago")))
+      (is (=  (datetime (-> 10 seconds from-now) :now-dt (now)) "in 10 seconds"))
+      (is (=  (datetime (now) :now-dt (-> 1 seconds from-now)) "1 second ago"))
+      (is (=  (datetime (-> 1 seconds from-now) :now-dt (now)) "in 1 second")))
 
-  (testing "should return _ minutes ago if the difference is less then an hour."
+  (testing "should return _ minutes ago/in if the difference is less then an hour."
       (is (=  (datetime (now) :now-dt (-> 10 minutes from-now)) "10 minutes ago"))
-      (is (=  (datetime (now) :now-dt (-> 1 minutes from-now)) "1 minute ago")))
+      (is (=  (datetime (-> 10 minutes from-now) :now-dt (now)) "in 10 minutes"))
+      (is (=  (datetime (now) :now-dt (-> 1 minutes from-now)) "1 minute ago"))
+      (is (=  (datetime (-> 1 minutes from-now) :now-dt (now)) "in 1 minute")))
 
-  (testing "should return _ hours ago if the difference is less then a day."
+  (testing "should return _ hours ago/in if the difference is less then a day."
       (is (=  (datetime (now) :now-dt (-> 10 hours from-now)) "10 hours ago"))
-      (is (=  (datetime (now) :now-dt (-> 1 hours from-now)) "1 hour ago")))
+      (is (=  (datetime (-> 10 hours from-now) :now-dt (now)) "in 10 hours"))
+      (is (=  (datetime (now) :now-dt (-> 1 hours from-now)) "1 hour ago"))
+      (is (=  (datetime (-> 1 hours from-now) :now-dt (now)) "in 1 hour")))
 
-  (testing "should return _ days ago if the difference is less then a week."
+  (testing "should return _ days ago/in if the difference is less then a week."
       (is (=  (datetime (now) :now-dt (-> 5 days from-now)) "5 days ago"))
-      (is (=  (datetime (now) :now-dt (-> 1 days from-now)) "1 day ago")))
+      (is (=  (datetime (-> 5 days from-now) :now-dt (now)) "in 5 days"))
+      (is (=  (datetime (now) :now-dt (-> 1 days from-now)) "1 day ago"))
+      (is (=  (datetime (-> 1 days from-now) :now-dt (now)) "in 1 day")))
 
-  (testing "should return _ weeks ago if the difference is less then a month."
+  (testing "should return _ weeks ago/in if the difference is less then a month."
     (is (=  (datetime (now) :now-dt (-> 10 days from-now)) "1 week ago"))
-    (is (=  (datetime (now) :now-dt (-> 3 weeks from-now)) "3 weeks ago")))
+    (is (=  (datetime (-> 10 days from-now) :now-dt (now)) "in 1 week"))
+    (is (=  (datetime (now) :now-dt (-> 3 weeks from-now)) "3 weeks ago"))
+    (is (=  (datetime (-> 3 weeks from-now) :now-dt (now)) "in 3 weeks")))
 
-  (testing "should return _ months ago if the difference is less then a year."
+  (testing "should return _ months ago/in if the difference is less then a year."
     (is (=  (datetime (now) :now-dt (-> 10 weeks from-now)) "2 months ago"))
+    (is (=  (datetime (-> 10 weeks from-now) :now-dt (now)) "in 2 months"))
     (is (=  (datetime (now) :now-dt (-> 10 months from-now)) "10 months ago"))
-    (is (=  (datetime (now) :now-dt (-> 1 months from-now)) "1 month ago")))
+    (is (=  (datetime (-> 10 months from-now) :now-dt (now)) "in 10 months"))
+    (is (=  (datetime (now) :now-dt (-> 1 months from-now)) "1 month ago"))
+    (is (=  (datetime (-> 1 months from-now) :now-dt (now)) "in 1 month")))
 
   (testing "should return _ years ago if the difference is less then a decade."
     (is (=  (datetime (now) :now-dt (-> 3 years from-now)) "3 years ago"))
-    (is (=  (datetime (now) :now-dt (-> 1 years from-now)) "1 year ago")))
+    (is (=  (datetime (-> 3 years from-now) :now-dt (now)) "in 3 years"))
+    (is (=  (datetime (now) :now-dt (-> 1 years from-now)) "1 year ago"))
+    (is (=  (datetime (-> 1 years from-now) :now-dt (now)) "in 1 year")))
 
   (testing "should return _ decade ago if the difference is less then a century."
     (is (=  (datetime (now) :now-dt (-> (* 3 10) years  from-now)) "3 decades ago"))
-    (is (=  (datetime (now) :now-dt (-> (* 1 10) years from-now)) "1 decade ago")))
+    (is (=  (datetime (-> (* 3 10) years from-now) :now-dt (now)) "in 3 decades"))
+    (is (=  (datetime (now) :now-dt (-> 10 years from-now)) "1 decade ago"))
+    (is (=  (datetime (-> 10 years from-now) :now-dt (now)) "in 1 decade")))
 
   ;; FIXME: BUG in joda
   ;; (testing "should return _ century ago if the difference is less then a millennium."
