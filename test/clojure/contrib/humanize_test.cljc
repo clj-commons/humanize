@@ -8,9 +8,9 @@
             [clojure.contrib.inflect :refer [pluralize-noun]]
             #?(:clj [clojure.math.numeric-tower :refer [expt]])
             #?(:clj  [clj-time.core  :refer [now from-now seconds millis minutes
-                                             hours days weeks months years]]
+                                             hours days weeks months years plus]]
                :cljs [cljs-time.core :refer [now from-now seconds millis minutes
-                                             hours days weeks months years]])
+                                             hours days weeks months years plus]])
             #?(:clj  [clj-time.local  :refer [local-now]]
                :cljs [cljs-time.local :refer [local-now]])
             #?(:clj  [clj-time.coerce  :refer [to-date-time to-string]]
@@ -151,7 +151,7 @@
 
 (deftest datetime-test
   (let [past (fn [n unit] (datetime (now) :now-dt (-> n unit from-now)))
-        future (fn [n unit] (datetime (+ (-> n unit from-now) 300) ; fix delayed execution by adding some millis
+        future (fn [n unit] (datetime (plus (-> n unit from-now) (millis 300)) ; fix delayed execution by adding some millis
                                       :now-dt (now)))]
     (testing "date diff to text"
       (are [expected diff] (= expected diff)
