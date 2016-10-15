@@ -33,7 +33,8 @@
     (is (= (pluralize-noun 2 "life") "lives"))
     (is (= (pluralize-noun 2 "thief") "thieves"))
     (is (= (pluralize-noun 2 "chief") "chiefs"))
-    (is (= (pluralize-noun 2 "roof") "roofs")))
+    (is (= (pluralize-noun 2 "roof") "roofs"))
+    (is (= (pluralize-noun 2 "staff") "staffs")))
 
   (testing "Testing general nouns."
     (is (= (pluralize-noun 2 "car") "cars"))

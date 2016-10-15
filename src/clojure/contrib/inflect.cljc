@@ -59,7 +59,8 @@
                          (fn [noun] (str noun "es")))
 
 (add-pluralize-noun-rule "For nouns ending with `f', suffixes `ves'"
-                         (fn [noun] (ends-with? noun "f"))
+                         (fn [noun] (and (ends-with? noun "f")
+                                         (not (ends-with? noun "ff"))))
                          (fn [noun] (str (-> noun butlast clojure.string/join) "ves")))
 
 (add-pluralize-noun-rule "For nouns ending with `fe', suffixes `ves'"
