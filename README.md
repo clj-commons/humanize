@@ -176,11 +176,14 @@ user> (clojure.contrib.inflect/pluralize-noun 6 "buzz")
 ### datetime
 
 Given a datetime or date, return a human-friendly representation
-of the amount of time elapsed, relative to the current time.
+of the amount of time difference, relative to the current time.
 
 ```clojure
 user> (clojure.contrib.humanize/datetime (plus (now) (seconds -30)))
 "30 seconds ago"
+
+user> (clojure.contrib.humanize/datetime (plus (now) (seconds 30)))
+"in 30 seconds"
 
 user> (clojure.contrib.humanize/datetime (plus (now) (years -20)))
 "2 decades ago"
