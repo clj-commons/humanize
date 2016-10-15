@@ -9,7 +9,7 @@
             #?(:clj [clojure.math.numeric-tower :refer [expt]])
             #?(:clj  [clj-time.core  :refer [now from-now seconds millis minutes
                                              hours days weeks months years]]
-               :cljs [cljs-time.core :refer [now from-now seconds minutes
+               :cljs [cljs-time.core :refer [now from-now seconds millis minutes
                                              hours days weeks months years]])
             #?(:clj  [clj-time.local  :refer [local-now]]
                :cljs [cljs-time.local :refer [local-now]])
