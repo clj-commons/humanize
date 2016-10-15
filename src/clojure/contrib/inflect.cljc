@@ -134,3 +134,7 @@
                                 "squid" "squid",
                                 })
 
+(add-pluralize-noun-exceptions "Special cases"
+                               {
+                                "millenium" "millennia",
+                                })

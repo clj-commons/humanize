@@ -257,47 +257,42 @@
                (interval now-dt then-dt)
                (interval then-dt now-dt))]
     (cond
-     ;; if the diff is less than a second
-     (<= (in-seconds diff) 0) (if future-time?
-                                (str prefix " a moment")
-                                (str "a moment " suffix))
 
-     ;; if the diff is less than a minute
-     (<= (in-minutes diff) 0) (with-dt-diff in-seconds diff "second" future-time? prefix suffix)
+      ;; if the diff is greater than a millennium
+      (>= (in-millennia diff) 1) (with-dt-diff in-millennia diff "millenium" future-time? prefix suffix)
 
-     ;; if the diff is less than an hour
-     (<= (in-hours diff) 0) (with-dt-diff in-minutes diff "minute" future-time? prefix suffix)
+      ;; if the diff is less than a millennium
+      (>= (in-centuries diff) 1) (with-dt-diff in-centuries diff "century" future-time? prefix suffix)
 
-     ;; if the diff is less than a day
-     (<= (in-days diff) 0) (with-dt-diff in-hours diff "hour" future-time? prefix suffix)
+      ;; if the diff is less than a century
+      (>= (in-decades diff) 1) (with-dt-diff in-decades diff "decade" future-time? prefix suffix)
 
-     ;; if the diff is less than a week
-     (<= (in-weeks diff) 0) (with-dt-diff in-days diff "day" future-time? prefix suffix)
+      ;; if the diff is less than a decade
+      (>= (in-years diff) 1) (with-dt-diff in-years diff "year" future-time? prefix suffix)
 
-     ;; if the diff is less than a month
-     (<= (in-months diff) 0) (with-dt-diff in-weeks diff "week" future-time? prefix suffix)
+      ;; if the diff is less than a year
+      (>= (in-months diff) 1) (with-dt-diff in-months diff "month" future-time? prefix suffix)
 
-     ;; if the diff is less than a year
-     (<= (in-years diff) 0) (with-dt-diff in-months diff "month" future-time? prefix suffix)
+      ;; if the diff is less than a month
+      (>= (in-weeks diff) 1) (with-dt-diff in-weeks diff "week" future-time? prefix suffix)
 
-     ;; if the diff is less than a decade
-     (< (in-decades diff) 1) (with-dt-diff in-years diff "year" future-time? prefix suffix)
+      ;; if the diff is less than a week
+      (>= (in-days diff) 1) (with-dt-diff in-days diff "day" future-time? prefix suffix)
 
-     ;; if the diff is less than a century
-     (< (in-centuries diff) 1) (with-dt-diff in-decades diff "decade" future-time? prefix suffix)
+      ;; if the diff is less than a day
+      (>= (in-hours diff) 1) (with-dt-diff in-hours diff "hour" future-time? prefix suffix)
 
-     ;; if the diff is less than a millennium
-     (< (in-millennia diff) 1) (str (-> diff in-years (/ 100) long) " "
-                                    (pluralize-noun (-> diff in-years (/ 100) long) "century")
-                                    " " suffix)
+      ;; if the diff is less than an hour
+      (>= (in-minutes diff) 1) (with-dt-diff in-minutes diff "minute" future-time? prefix suffix)
 
-     ;; if the diff is less than 10 millennia
-     (< (in-years diff) 10000) (str (-> diff in-years (/ 1000) long) " "
-                                    (pluralize-noun (-> diff in-years (/ 1000) long) "millennium")
-                                    " " suffix)
+      ;; if the diff is less than a minute
+      (>= (in-seconds diff) 1) (with-dt-diff in-seconds diff "second" future-time? prefix suffix)
 
-     ;; FIXME:
-     :else (to-string diff))))
+      ;; if the diff is less than a second
+      :else  (if future-time?
+               (str prefix " a moment")
+               (str "a moment " suffix))
+      )))
 
 (def ^:private duration-periods
   [[(* 1000 60 60 24 365) "year"]

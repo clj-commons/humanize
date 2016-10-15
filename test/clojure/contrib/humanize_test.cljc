@@ -151,7 +151,8 @@
 
 (deftest datetime-test
   (let [past (fn [n unit] (datetime (now) :now-dt (-> n unit from-now)))
-        future (fn [n unit] (datetime (-> n unit from-now) :now-dt (now)))]
+        future (fn [n unit] (datetime (+ (-> n unit from-now) 300) ; fix delayed execution by adding some millis
+                                      :now-dt (now)))]
     (testing "date diff to text"
       (are [expected diff] (= expected diff)
                            "a moment ago" (datetime (now))
@@ -189,7 +190,13 @@
                            "3 decades ago" (past 30 years)
                            "in 3 decades" (future 30 years)
                            "1 decade ago" (past 10 years)
-                           "in 1 decade" (future 10 years)))))
+                           "in 1 decade" (future 10 years)
+                           "3 centuries ago" (past (* 3 100) years)
+                           "in 3 centuries" (future (* 3 100) years)
+                           "3 millennia ago" (past (* 3 1000) years)
+                           "1 millenium ago" (past 1000 years)
+                           "in 3 millennia" (future (* 3 1000) years)
+                           "in 1 millenium" (future 1000 years)))))
 
 #_(deftest datetime-test
   ;; FIXME: BUG in joda
