@@ -66,12 +66,15 @@
                               [12 "twelve"]
                               [40 "forty"]
                               [94 "ninety-four"]
+                              [100 "one hundred"]
                               [51 "fifty-one"]
                               [234 "two hundred and thirty-four"]
+                              [1000 "one thousand"]
                               [3567 "three thousand five hundred and sixty-seven"]
                               [44120 "forty-four thousand one hundred and twenty"]
                               [25223 "twenty-five thousand two hundred and twenty-three"]
                               [5223 "five thousand two hundred and twenty-three"]
+                              [1000000 "one million"]
                               [23237897 "twenty-three million two hundred and thirty-seven thousand eight hundred and ninety-seven"]]]
       ;; default argument
       (is (= (numberword testnum) result)))))

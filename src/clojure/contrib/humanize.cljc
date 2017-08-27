@@ -133,23 +133,29 @@
 
     (cond
      ;; handle million part
-     (>= digitcnt 6)    (join " " [(numberword (int (/ num 1000000)))
-                                  "million"
-                                  (numberword (rem num 1000000))])
+     (>= digitcnt 6)    (if (divisible? num 1000000)
+                           (join " " [(numberword (int (/ num 1000000)))
+                                      "million"])
+                           (join " " [(numberword (int (/ num 1000000)))
+                                       "million"
+                                       (numberword (rem num 1000000))]))
 
      ;; handle thousand part
-     (>= digitcnt 3)    (join " " [(numberword (int (/ num 1000)))
-                                   "thousand"
-                                   (numberword (rem num 1000))])
+     (>= digitcnt 3)    (if (divisible? num 1000)
+                            (join " " [(numberword (int (/ num 1000)))
+                                       "thousand"])
+                            (join " " [(numberword (int (/ num 1000)))
+                                       "thousand"
+                                       (numberword (rem num 1000))]))
 
      ;; handle hundred part
      (>= digitcnt 2)    (if (divisible? num 100)
-                          (join " " [(numap (int (/ num 100)))
-                                     "hundred"])
-                          (join " " [(numap (int (/ num 100)))
-                                     "hundred"
-                                     "and"
-                                     (numberword (rem num 100))]))
+                            (join " " [(numap (int (/ num 100)))
+                                       "hundred"])
+                            (join " " [(numap (int (/ num 100)))
+                                       "hundred"
+                                       "and"
+                                       (numberword (rem num 100))]))
 
      ;; handle the last two digits
      (< num 20)                 (numap num)
