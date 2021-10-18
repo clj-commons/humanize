@@ -238,9 +238,11 @@
                                                            (str remaining " " (pluralize-noun remaining "other"))
                                                            (str remaining " other " (pluralize-noun remaining
                                                                                                     truncate-noun)))]
-                                        (str (join (interpose ", " display-coll))
-                                             ", and " last-item))
-
+                                        (if (= 1 maximum-display)
+                                          ; if only one item is displayed there should be no oxford comma
+                                          (str (apply str display-coll) " and " last-item)
+                                          (str (join (interpose ", " display-coll))
+                                               ", and " last-item)))
      ;; TODO: shouldn't reach here, throw exception
       :else coll-length)))
 

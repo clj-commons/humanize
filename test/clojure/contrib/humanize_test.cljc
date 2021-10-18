@@ -142,9 +142,9 @@
                      :maximum-display 2)
              (str (items 0) ", "
                   (items 1) ", and " 3 " others")))
-      (is (= (oxford (take 2 items) 
+      (is (= (oxford (take 4 items)
                      :maximum-display 1)
-             (str (items 0) " and " "1 other"))))
+             (str (items 0) " and " 3 " others"))))
 
     (testing "should accept custom trucation strings"
       (let [truncate-noun "fruit"]
