@@ -219,26 +219,30 @@
   (let [coll-length (count coll)]
     (cond
      ;; if coll has one or zero items
-     (< coll-length 2) (join coll)
+      (< coll-length 2) (join coll)
+
+     ;; if coll has exactly two items, there won't be a comma, so join them with "and"
+      (and (= coll-length 2)
+           (<= coll-length maximum-display))
+      (str (first coll) " and " (second coll))
 
      ;; if the number of items doesn't exceed maximum display size
-     (<= coll-length maximum-display) (let [before-last (take (dec coll-length) coll)
-                                            last-item (last coll)]
-                                        (str (join (interpose ", " before-last))
+      (<= coll-length maximum-display) (let [before-last (take (dec coll-length) coll)
+                                             last-item   (last coll)]
+                                         (str (join (interpose ", " before-last))
+                                              ", and " last-item))
+
+      (> coll-length maximum-display) (let [display-coll (take maximum-display coll)
+                                            remaining    (- coll-length maximum-display)
+                                            last-item    (if (empty? truncate-noun)
+                                                           (str remaining " " (pluralize-noun remaining "other"))
+                                                           (str remaining " other " (pluralize-noun remaining
+                                                                                                    truncate-noun)))]
+                                        (str (join (interpose ", " display-coll))
                                              ", and " last-item))
 
-     (> coll-length maximum-display) (let [display-coll (take maximum-display coll)
-                                           remaining (- coll-length maximum-display)
-                                           last-item (if (empty? truncate-noun)
-                                                       (str remaining " " (pluralize-noun remaining "other"))
-                                                       (str remaining " other " (pluralize-noun remaining
-                                                                                                truncate-noun)))
-                                           ]
-                                       (str (join (interpose ", " display-coll))
-                                            ", and " last-item))
-
      ;; TODO: shouldn't reach here, throw exception
-     :else coll-length)))
+      :else coll-length)))
 
 (defn- in-decades [diff]
   (/ (in-years diff) 10))

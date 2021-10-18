@@ -122,8 +122,11 @@
     (testing "should return a string version of a list that has only one value."
       (is (= (oxford [(items 0)]) (items 0))))
 
+    (testing "should return a string with no commas & items separated with `and` when passed exactly two values in list"
+      (is (oxford (take 2 items)) (str (items 0) " and " (items 1))))
+
     (testing "should return items separated by `and' when given a list of values"
-      (is (= (oxford (take 2 items)) (str (items 0) ", and " (items 1))))
+      (is (= (oxford (take 2 items)) (str (items 0) " and " (items 1))))
       (is (= (oxford (take 3 items)) (str (items 0) ", "
                                           (items 1) ", and " (items 2))))
       (is (= (oxford (take 4 items)) (str (items 0) ", "
@@ -138,7 +141,10 @@
       (is (= (oxford (take 5 items)
                      :maximum-display 2)
              (str (items 0) ", "
-                  (items 1) ", and " 3 " others"))))
+                  (items 1) ", and " 3 " others")))
+      (is (= (oxford (take 2 items) 
+                     :maximum-display 1)
+             (str (items 0) " and " "1 other"))))
 
     (testing "should accept custom trucation strings"
       (let [truncate-noun "fruit"]
