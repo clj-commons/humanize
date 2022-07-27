@@ -4,18 +4,18 @@
             [clojure.contrib.inflect :refer [pluralize-noun in?]]
             [clojure.string :refer [join]]
             #?(:clj  [clojure.contrib.macros :refer [with-dt-diff]])
-            #?(:clj  [clj-time.core  :refer [after? date-time interval in-seconds
+            #?(:clj  [clj-time.core  :refer [after? interval in-seconds
                                              in-minutes in-hours in-days
                                              in-weeks in-months in-years]]
-               :cljs [cljs-time.core :refer [after? date-time interval in-seconds
+               :cljs [cljs-time.core :refer [after? interval in-seconds
                                              in-minutes in-hours in-days
                                              in-weeks in-months in-years]])
             #?(:cljs [goog.string :as gstring])
             #?(:cljs [goog.string.format])
             #?(:clj  [clj-time.local  :refer [local-now]]
                :cljs [cljs-time.local :refer [local-now]])
-            #?(:clj  [clj-time.coerce  :refer [to-date-time to-string]]
-               :cljs [cljs-time.coerce :refer [to-date-time to-string]]))
+            #?(:clj  [clj-time.coerce  :refer [to-date-time]]
+               :cljs [cljs-time.coerce :refer [to-date-time]]))
   #?(:cljs (:require-macros [clojure.contrib.macros :refer [with-dt-diff]])))
 
 #?(:clj  (def ^:private num-format format)
