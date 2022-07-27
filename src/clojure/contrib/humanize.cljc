@@ -1,4 +1,5 @@
 (ns clojure.contrib.humanize
+  (:refer-clojure :exclude [abs])
   (:require #?(:clj  [clojure.math.numeric-tower :refer [expt floor round abs]])
             [clojure.contrib.inflect :refer [pluralize-noun in?]]
             [clojure.string :refer [join]]
