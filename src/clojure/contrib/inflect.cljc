@@ -2,23 +2,24 @@
   "Functions and rules for pluralizing nouns."
   (:require [clojure.string :refer [ends-with?]]))
 
-(defn in? [x coll]
-  "Return true if x is in coll, else false. "
+(defn in?
+  "Return true if x is in coll, else false."
+  [x coll]
   ;; FIXME: duplicate
   (some #(= x %) coll))
 
 (def ^:private pluralize-noun-rules (atom []))
 (def ^:private pluralize-noun-exceptions (atom {}))
 
-(defn pluralize-noun [count noun]
-  "Return the pluralized noun if the `count' is
-   not 1."
+(defn pluralize-noun
+  "Return the pluralized noun if the `count' is not 1."
+  [count noun]
   {:pre [(<= 0 count)]}
   (let [singular? (== count 1)]
     (if singular?
       noun                                                  ; If singular, return noun
       (some (fn [[cond? result-fn]]
-                (if (cond? noun)
+                (when (cond? noun)
                   (result-fn noun)))
             @pluralize-noun-rules))))
 
@@ -28,7 +29,7 @@
   to the result-fn to generate the plural form.
 
   The rule description is for documentation only, it is ignored and may be nil."
-  [rule-description cond? result-fn]
+  [_rule-description cond? result-fn]
   (swap! pluralize-noun-rules
          conj
          [cond? result-fn]))
@@ -39,7 +40,7 @@
    exceptions is a map from singular form to plural form.
 
    The exception description is for documentation only, it is ignored and may be nil."
-  [execption-description exceptions]
+  [_exception-description exceptions]
   (swap! pluralize-noun-exceptions into exceptions))
 
 ;; the order of rules is important
@@ -68,7 +69,7 @@
                          (fn [noun] (str (-> noun butlast butlast clojure.string/join) "ves")))
 
 (add-pluralize-noun-rule "Always append `s' at the end of noun."
-                         (fn [noun] true) ;; always return true
+                         (fn [_noun] true) ;; always return true
                          (fn [noun] (str noun "s")))
 
 (add-pluralize-noun-exceptions "Irregular nouns ending in en"
