@@ -26,7 +26,6 @@
             :jar-file  jar-file})))
 
 (defn deploy "Deploy the JAR to Clojars." [opts]
-  (println "**" opts)
   (-> opts
     (assoc :lib lib :version (if (:snapshot opts) snapshot version))
     (bb/deploy)))
