@@ -1,7 +1,7 @@
 
 # clojure-humanize
 
-![clojure.yml](https://github.com/github/trhura/clojure-humanize/workflows/main.yml/badge.svg)
+![clojure.yml](https://github.com/github/trhura/clojure-humanize/workflows/clojure.yml/badge.svg)
 
 A Clojure(script) library to produce human readable strings for numbers, dates
 based on similar libraries in other languages
@@ -259,7 +259,7 @@ Deploy:
  clojure -T:build deploy 
 ```
 
-Set `:snapshot` to `true` for a snapshot version;
+Set `:snapshot` to `true` for a snapshot version:
 
 ```clj
 clojure -T:build jar :snapshot true 
