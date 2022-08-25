@@ -1,7 +1,7 @@
 
 # clojure-humanize
 
-![clojure.yml](https://github.com/trhura/clojure-humanize/actions/workflows/clojure.yml/badge.svg)
+![clojure.yml](https://github.com/trhura/clojure-humanize/actions/workflows/clojure.yml/badge.svg?event=push)
 
 A Clojure(script) library to produce human readable strings for numbers, dates
 based on similar libraries in other languages
