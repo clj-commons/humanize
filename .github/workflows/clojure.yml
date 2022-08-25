@@ -1,0 +1,26 @@
+name: build
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install clojure tools
+      uses: DeLaGuardo/setup-clojure@5.0
+      with:
+        cli: 1.11.1.1105
+    - name: Linter
+      run: clojure -M:clj-kondo --lint src
+    - name: Install karma
+      run: npm install -g karma karma-cljs-test karma-chrome-launcher karma-firefox-launcher
+    - name: Run clj tests
+      run: clojure -Mtest
+    - name: Run chrome cljs tests
+      run:  clojure -Mcljs-test -x chrome-headless
+    - name: Run firefox cljs tests
+      run:  clojure -Mcljs-test -x firefox-headless
+
