@@ -19,7 +19,7 @@
                 :version   (if (:snapshot opts) snapshot version)
                 :basis     basis
                 :src-dirs  ["src"]})
-  (b/copy-dir {:src-dirs   ["src" "resources"]
+  (b/copy-dir {:src-dirs   ["src"]
                :target-dir class-dir})
   (let [jar-file (format "target/%s-%s.jar" (name lib) (if (:snapshot opts) snapshot version))]
     (b/jar {:class-dir class-dir

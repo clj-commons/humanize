@@ -2,7 +2,7 @@
         org.clojure/math.numeric-tower {:mvn/version "0.0.5"}
         clj-time/clj-time {:mvn/version "0.15.2"}
         com.andrewmcveigh/cljs-time {:mvn/version "0.5.2"}}
- :paths ["src" "test"]
+ :paths ["src"]
  :aliases
  {:test      {:extra-paths ["test"]
               :extra-deps  {io.github.cognitect-labs/test-runner
