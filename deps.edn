@@ -1,0 +1,21 @@
+{:deps {org.clojure/clojure {:mvn/version "1.11.1"}
+        org.clojure/math.numeric-tower {:mvn/version "0.0.5"}
+        clj-time/clj-time {:mvn/version "0.15.2"}
+        com.andrewmcveigh/cljs-time {:mvn/version "0.5.2"}}
+ :paths ["src"]
+ :aliases
+ {:test      {:extra-paths ["test"]
+              :extra-deps  {io.github.cognitect-labs/test-runner
+                            {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
+              :main-opts   ["-m" "cognitect.test-runner"]
+              :exec-fn     cognitect.test-runner.api/test}
+  :cljs-test {:extra-paths ["test"]
+              :extra-deps  {kongeor/cljs-test-runner
+                            {:git/url "https://github.com/kongeor/cljs-test-runner"
+                             :sha     "fa604e9e5f4e74a544958dfdf4c5ccc2a4b2c916"}}
+              :main-opts   ["-m" "cljs-test-runner.main"]}
+  :clj-kondo {:replace-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
+              :main-opts ["-m" "clj-kondo.main"]}
+  :build     {:deps       {io.github.seancorfield/build-clj
+                           {:git/tag "v0.8.3" :git/sha "7ac1f8d"}}
+              :ns-default build}}}

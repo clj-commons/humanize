@@ -1,12 +1,12 @@
 
 # clojure-humanize
 
-[![Build Status](https://travis-ci.org/trhura/clojure-humanize.svg?branch=master)](https://travis-ci.org/trhura/clojure-humanize)
+![clojure.yml](https://github.com/trhura/clojure-humanize/actions/workflows/clojure.yml/badge.svg?event=push)
 
 A Clojure(script) library to produce human readable strings for numbers, dates
 based on similar libraries in other languages
 
-## Leiningen
+## Installation
 
 __([via Clojars](https://clojars.org/clojure-humanize))__
 
@@ -213,18 +213,58 @@ user> (clojure.contrib.humanize/duration 325100 {:number-format str})
 
 ```
 
+## Linting
+
+Run:
+
+```sh
+ clj -M:clj-kondo --lint src
+```
+
 ## Running Tests
 
-Test are cross runtime and are organized using the same pattern found in [route-ccrs](https://github.com/lymingtonprecision/route-ccrs).
+JVM tests can be run with just:
 
-Running them on the `java` runtime:
+```
+clojure -Mtest
+```
 
-`lein test clojure.contrib.cljc-test`
+For cljs, you will need node/npm in order to install karma:
 
-And on the `javascript` runtime (requires [phantomjs](http://phantomjs.org/)):
+```sh
+npm install -g karma karma-cljs-test karma-chrome-launcher karma-firefox-launcher
+```
 
-`lein cljsbuild test`
+Then tests can be run with:
 
+```clj
+clojure -Mcljs-test -x chrome-headless
+```
+
+Or `-x firefox-headless`.
+
+## Deployment
+
+Check [deps-deploy README](https://github.com/slipset/deps-deploy) for details regarding clojars credentials.
+
+Build a jar:
+
+```clj
+clojure -T:build jar
+```
+
+Deploy:
+
+```clj
+ clojure -T:build deploy 
+```
+
+Set `:snapshot` to `true` for a snapshot version:
+
+```clj
+clojure -T:build jar :snapshot true 
+clojure -T:build deploy :snapshot true
+```
 
 ## TODO
 

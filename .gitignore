@@ -9,3 +9,5 @@ pom.xml.asc
 /.nrepl-port
 .idea/*
 *.iml
+cljs-test-runner-out/
+.cpcache/
