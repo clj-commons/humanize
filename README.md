@@ -3,7 +3,7 @@
 
 ![clojure.yml](https://github.com/trhura/clojure-humanize/actions/workflows/clojure.yml/badge.svg?event=push)
 
-A Clojure(script) library to produce human readable strings for numbers, dates
+A Clojure(script) library to produce human-readable strings for numbers, dates, and more
 based on similar libraries in other languages
 
 ## Installation
@@ -32,13 +32,16 @@ Takes a number and return a full written string form. For example,
 thirty-seven thousand eight hundred and ninety-seven".
 
 ```clojure
-user> (numberword 3567)
+user> (require '[clojure.contrib.humanize :as h])
+nil
+
+user> (h/numberword 3567)
 "three thousand five hundred and sixty-seven"
 
-user> (numberword 25223)
+user> (h/numberword 25223)
 "twenty-five thousand two hundred and twenty-three"
 
-user> (numberword 23237897)
+user> (h/numberword 23237897)
 "twenty-three million two hundred and thirty-seven thousand eight hundred and ninety-seven"
 ```
 
@@ -47,17 +50,17 @@ user> (numberword 23237897)
 Converts an integer to a string containing commas. every three digits.
 
 ```clojure
-user>  (clojure.contrib.humanize/intcomma 1000)
-1,000
+user>  (h/intcomma 1000)
+"1,000"
 
-user>  (clojure.contrib.humanize/intcomma 10123)
-10,123
+user>  (h/intcomma 10123)
+"10,123"
 
-user>  (clojure.contrib.humanize/intcomma 10311)
-10,311
+user>  (h/intcomma 10311)
+"10,311"
 
-user>  (clojure.contrib.humanize/intcomma 1000000)
-1,000,000
+user>  (h/intcomma 1000000)
+"1,000,000"
 ```
 
 ### intword
@@ -69,17 +72,17 @@ billion'.  Supports up to decillion (33 digits) and googol (100
 digits).
 
 ```clojure
-user>  (clojure.contrib.humanize/intword 2000000000)
-2.0 billion
+user>  (h/intword 2000000000)
+"2.0 billion"
 
-user>  (clojure.contrib.humanize/intword 6000000000000)
-6.0 trillion
+user>  (h/intword 6000000000000)
+"6.0 trillion"
 
-user>  (clojure.contrib.humanize/intword 3500000000000000000000N)
-3.5 sextillion
+user>  (h/intword 3500000000000000000000N)
+"3.5 sextillion"
 
-user>  (clojure.contrib.humanize/intword 8100000000000000000000000000000000N)
-8.1 decillion
+user>  (h/intword 8100000000000000000000000000000000N)
+"8.1 decillion"
 ```
 
 ### ordinal
@@ -87,37 +90,40 @@ user>  (clojure.contrib.humanize/intword 8100000000000000000000000000000000N)
 Converts an integer to its ordinal as a string.
 
 ```clojure
-user>  (clojure.contrib.humanize/ordinal 2)
-2nd
+user>  (h/ordinal 2)
+"2nd"
 
-user>  (clojure.contrib.humanize/ordinal 4)
-4th
+user>  (h/ordinal 4)
+"4th"
 
-user>  (clojure.contrib.humanize/ordinal 11)
-11th
+user>  (h/ordinal 11)
+"11th"
 
-user>  (clojure.contrib.humanize/ordinal 111)
-111th
+user>  (h/ordinal 111)
+"111th"
 ```
 
 ### filesize
 
-Format a number of byteslike a human readable filesize (eg. 10 kB).
-By default, decimal suffixes (kB, MB) are used.  Passing binary=true
+Format a number of bytes as a human-readable filesize (eg. 10 kB).
+By default, decimal suffixes (kB, MB) are used.  Passing the :binary option as true
 will use binary suffixes (KiB, MiB) are used.
 
+The :format option gives more control over how the numeric part of the output filesize
+is created.
+
 ```clojure
-user>  (clojure.contrib.humanize/filesize 3000000 :binary false)
-3.0MB
+user>  (h/filesize 3000000 :binary false)
+"3.0MB"
 
-user>  (clojure.contrib.humanize/filesize 3000000000000 :binary false)
-3.0TB
+user>  (h/filesize 3000000000000 :binary false)
+"3.0TB"
 
-user>  (clojure.contrib.humanize/filesize 3000 :binary true :format " %.2f "" ")
-2.93KiB
+user>  (h/filesize 3000 :binary true :format " %.2f "" ")
+"2.93KiB"
 
-user>  (clojure.contrib.humanize/filesize 3000000 :binary true)
-2.9MiB
+user>  (h/filesize 3000000 :binary true)
+"2.9MiB"
 ```
 
 ### truncate
@@ -126,26 +132,27 @@ Truncate a string with suffix (ellipsis by default) if it is longer
 than specified length.
 
 ```clojure
-user> (clojure.contrib.humanize/truncate "abcdefghijklmnopqrstuvwxyz" 10)
+user> (h/truncate "abcdefghijklmnopqrstuvwxyz" 10)
 "abcdefg..."
 
-user> (clojure.contrib.humanize/truncate "abcdefghijklmnopqrstuvwxyz" 10 "...xyz")
+user> (h/truncate "abcdefghijklmnopqrstuvwxyz" 10 "...xyz")
 "abcd...xyz"
 ```
 
 ### oxford
-Converts a list of items to a human readable string with an optional
+
+Converts a list of items to a human-readable string with an optional
 limit.
 
 ```clojure
-user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango"])
+user> (h/oxford ["apple" "orange" "mango"])
 "apple, orange, and mango"
 
-user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango" "pear"]
+user> (h/oxford ["apple" "orange" "mango" "pear"]
                                        :maximum-display 2)
 "apple, orange, and 2 others"
 
-user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango" "pear"]
+user> (h/oxford ["apple" "orange" "mango" "pear"]
                                        :maximum-display 2
                                        :truncate-noun "fruit")
 "apple, orange, and 2 other fruits"
@@ -156,22 +163,28 @@ user> (clojure.contrib.humanize/oxford ["apple" "orange" "mango" "pear"]
 Return the pluralized noun if the given number is not 1.
 
 ```clojure
-user> (clojure.contrib.inflect/pluralize-noun 2 "thief")
+user (require '[clojure.contrib.inflect :as i])
+nil
+
+user> (i/pluralize-noun 2 "thief")
 "thieves"
 
-user> (clojure.contrib.inflect/pluralize-noun 3 "tomato")
+user> (i/pluralize-noun 3 "tomato")
 "tomatoes"
 
-user> (clojure.contrib.inflect/pluralize-noun 4 "roof")
+user> (i/pluralize-noun 4 "roof")
 "roofs"
 
-user> (clojure.contrib.inflect/pluralize-noun 5 "person")
+user> (i/pluralize-noun 5 "person")
 "people"
 
-user> (clojure.contrib.inflect/pluralize-noun 6 "buzz")
+user> (i/pluralize-noun 6 "buzz")
 "buzzes"
-
 ```
+
+Other functions in the inflect namespace are used to extend the rules
+for how particular words, or particular letter patterns in words, 
+can be pluralized.
 
 ### datetime
 
@@ -179,16 +192,19 @@ Given a datetime or date, return a human-friendly representation
 of the amount of time difference, relative to the current time.
 
 ```clojure
-user> (clojure.contrib.humanize/datetime (plus (now) (seconds -30)))
+user> (require '[clj-time.core :as t])
+nil
+
+user> (h/datetime (t/plus (t/now) (t/seconds -30)))
 "30 seconds ago"
 
-user> (clojure.contrib.humanize/datetime (plus (now) (seconds 30)))
+user> (h/datetime (t/plus (t/now) (t/seconds 30)))
 "in 30 seconds"
 
-user> (clojure.contrib.humanize/datetime (plus (now) (years -20)))
+user> (h/datetime (t/plus (t/now) (t/years -20)))
 "2 decades ago"
 
-user> (clojure.contrib.humanize/datetime (plus (now) (years -7)))
+user> (h/datetime (t/plus (t/now) (t/years -7)))
 "7 years ago"
 
 ```
@@ -199,16 +215,16 @@ Given a duration in milliseconds, return a human-friendly
 representation of the amount of time passed.
 
 ```clojure
-user> (clojure.contrib.humanize/duration 2000)
+user> (h/duration 2000)
 "two seconds"
 
-user> (clojure.contrib.humanize/duration 325100)
+user> (h/duration 325100)
 "five minutes, twenty-five seconds"
 
-user> (clojure.contrib.humanize/duration 500)
+user> (h/duration 500)
 "less than a second"
 
-user> (clojure.contrib.humanize/duration 325100 {:number-format str})
+user> (h/duration 325100 {:number-format str})
 => "5 minutes, 25 seconds"
 
 ```
