@@ -9,7 +9,7 @@
   (or (:version opts)
       (str version "."
            (b/git-count-revs nil)
-           (when (:snapshot opts)
+           (when-not (:release opts)
              "-SNAPSHOT"))))
 
 (def base-opts
@@ -23,6 +23,7 @@
   (b/delete {:path "cljs-test-runner-out"}))
 
 (defn jar
+  "Build a JAR."
   [opts]
   (let [version (make-version opts)
         opts' (-> base-opts
@@ -31,7 +32,8 @@
     (bb/jar opts')))
 
 (defn deploy
-  "Build and deploy the JAR to Clojars."
+  "Build and deploy the JAR to Clojars.  Defaults to a snapshot,
+  specify :release true for a final release."
   [opts]
   (-> opts
       jar
