@@ -1,6 +1,6 @@
 (ns clojure.contrib.inflect-test
-  (:require #?(:clj  [clojure.test :refer :all]
-               :cljs [cljs.test :refer-macros [deftest testing is are]])
+  (:require #?(:clj  [clojure.test :refer [are deftest is testing]]
+               :cljs [cljs.test :refer-macros [are deftest is testing]])
             [clojure.contrib.inflect :refer [pluralize-noun]]))
 
 (deftest pluralize-noun-test
