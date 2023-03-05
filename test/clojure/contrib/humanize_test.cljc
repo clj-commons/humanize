@@ -242,10 +242,10 @@
              (datetime (jt.ldt/minus-minutes t1 10)
                        :suffix "in the glorious past"
                        :now-dt t1)))
-      (is (= "forward, into our glorious future 1 year"
+      (is (= "forward, into our bright future 1 year"
              (datetime (jt.ldt/plus-years t1 1)
                        :now-dt t1
-                       :prefix "forward, into our glorious future")))
+                       :prefix "forward, into our bright future")))
       (is (= "in 1 year"
              (datetime (jt.ldt/plus-years t1 1)
                        :now-dt t1
