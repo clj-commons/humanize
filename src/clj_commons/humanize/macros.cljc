@@ -1,5 +1,6 @@
-(ns clojure.contrib.macros
-  (:require [clojure.contrib.inflect :refer [pluralize-noun]]))
+(ns ^:no-doc clj-commons.humanize.macros
+   "Private namespace for implementation details."
+  (:require [clj-commons.humanize.inflect :refer [pluralize-noun]]))
 
 (defmacro with-dt-diff [desc-diff diff desc-type future-time? prefix suffix]
   `(let [d# (~desc-diff ~diff)

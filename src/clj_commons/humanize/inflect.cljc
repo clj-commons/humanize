@@ -1,4 +1,4 @@
-(ns clojure.contrib.inflect
+(ns clj-commons.humanize.inflect
   "Functions and rules for pluralizing nouns."
   (:require [clojure.string :refer [ends-with?]]))
 

@@ -2,7 +2,7 @@
   (:require [clojure.tools.build.api :as b]
             [org.corfield.build :as bb]))
 
-(def lib 'clojure-humanize/clojure-humanize)
+(def lib 'clj-commons/humanize)
 (def version "0.3")
 
 (defn make-version [opts]

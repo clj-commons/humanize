@@ -1,11 +1,11 @@
-(ns clojure.contrib.humanize-test
+(ns clj-commons.humanize-test
   (:require #?(:clj  [clojure.test :refer :all]
                :cljs [cljs.test :refer-macros [deftest testing is are]])
-            [clojure.contrib.humanize :refer [intcomma ordinal intword numberword
+            [clj-commons.humanize :refer [intcomma ordinal intword numberword
                                               filesize truncate oxford datetime
                                               duration]
              :as h]
-            [clojure.contrib.inflect :refer [pluralize-noun]]
+            [clj-commons.humanize.inflect :refer [pluralize-noun]]
             #?(:clj [clojure.math.numeric-tower :refer [expt]])
             #?(:clj  [clj-time.core  :refer [now from-now seconds millis minutes
                                              hours days weeks months years plus]]
@@ -103,7 +103,7 @@
                result))))))
 
 (deftest truncate-test
-  (testing "truncate should not return a string larger than give length."
+  (testing "truncate should not return a string larger than the given length."
     (let [string "asdfghjkl" ]
       (is (= (count (truncate string 7)) 7))
       (is (= (count (truncate string 7 "1234")) 7))

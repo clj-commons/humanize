@@ -1,7 +1,7 @@
 
 # clojure-humanize
 
-![clojure.yml](https://github.com/trhura/clojure-humanize/actions/workflows/clojure.yml/badge.svg?event=push)
+![clojure.yml](https://github.com/clj-commons/humanize/actions/workflows/clojure.yml/badge.svg?event=push)
 
 A Clojure(script) library to produce human-readable strings for numbers, dates, and more
 based on similar libraries in other languages
@@ -32,7 +32,7 @@ Takes a number and return a full written string form. For example,
 thirty-seven thousand eight hundred and ninety-seven".
 
 ```clojure
-user> (require '[clojure.contrib.humanize :as h])
+user> (require '[clj-commons.humanize :as h])
 nil
 
 user> (h/numberword 3567)
@@ -47,7 +47,7 @@ user> (h/numberword 23237897)
 
 ### intcomma
 
-Converts an integer to a string containing commas. every three digits.
+Converts an integer to a string containing commas every three digits.
 
 ```clojure
 user>  (h/intcomma 1000)
@@ -69,7 +69,7 @@ Converts a large integer to a friendly text representation. Works best
 for numbers over 1 million. For example, 1000000 becomes '1.0
 million', 1200000 becomes '1.2 million' and '1200000000' becomes '1.2
 billion'.  Supports up to decillion (33 digits) and googol (100
-digits).
+digits).  
 
 ```clojure
 user>  (h/intword 2000000000)
@@ -90,6 +90,9 @@ user>  (h/intword 8100000000000000000000000000000000N)
 Converts an integer to its ordinal as a string.
 
 ```clojure
+user> (h/ordinal 1)
+"1st"
+
 user>  (h/ordinal 2)
 "2nd"
 
@@ -119,7 +122,7 @@ user>  (h/filesize 3000000 :binary false)
 user>  (h/filesize 3000000000000 :binary false)
 "3.0TB"
 
-user>  (h/filesize 3000 :binary true :format " %.2f "" ")
+user>  (h/filesize 3000 :binary true :format "%.2f")
 "2.93KiB"
 
 user>  (h/filesize 3000000 :binary true)
@@ -135,8 +138,8 @@ than specified length.
 user> (h/truncate "abcdefghijklmnopqrstuvwxyz" 10)
 "abcdefg..."
 
-user> (h/truncate "abcdefghijklmnopqrstuvwxyz" 10 "...xyz")
-"abcd...xyz"
+user> (h/truncate "abcdefghijklmnopqrstuvwxyz" 10 "[more]")
+"abcd[more]"
 ```
 
 ### oxford
@@ -163,7 +166,7 @@ user> (h/oxford ["apple" "orange" "mango" "pear"]
 Return the pluralized noun if the given number is not 1.
 
 ```clojure
-user (require '[clojure.contrib.inflect :as i])
+user (require '[clj-commons.humanize.inflect :as i])
 nil
 
 user> (i/pluralize-noun 2 "thief")
@@ -242,7 +245,7 @@ Run:
 JVM tests can be run with just:
 
 ```
-clojure -Mtest
+clojure -X:test
 ```
 
 For cljs, you will need node/npm in order to install karma:
@@ -254,7 +257,7 @@ npm install -g karma karma-cljs-test karma-chrome-launcher karma-firefox-launche
 Then tests can be run with:
 
 ```clj
-clojure -Mcljs-test -x chrome-headless
+clojure -M:cljs-test -x chrome-headless
 ```
 
 Or `-x firefox-headless`.
@@ -263,23 +266,22 @@ Or `-x firefox-headless`.
 
 Check [deps-deploy README](https://github.com/slipset/deps-deploy) for details regarding clojars credentials.
 
-Build a jar:
+Build a snapshot jar:
 
 ```clj
 clojure -T:build jar
 ```
 
-Deploy:
+Deploy a snapshot:
 
 ```clj
  clojure -T:build deploy 
 ```
 
-Set `:snapshot` to `true` for a snapshot version:
+Set `:release` to `true` for a release version (make sure the version number in `build.clj` is correct first):
 
 ```clj
-clojure -T:build jar :snapshot true 
-clojure -T:build deploy :snapshot true
+clojure -T:build deploy :release true
 ```
 
 ## TODO
@@ -291,7 +293,7 @@ clojure -T:build deploy :snapshot true
 
 ## License
 
-Copyright © 2015 Thura Hlaing
+Copyright 2015-2023 Thura Hlaing
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.

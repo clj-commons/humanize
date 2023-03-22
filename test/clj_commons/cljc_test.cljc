@@ -1,8 +1,8 @@
-(ns clojure.contrib.cljc-test
+(ns clj-commons.cljc-test
   (:require #?(:clj [clojure.test :as test]
                :cljs [cljs.test :as test :include-macros true])
-                    [clojure.contrib.humanize-test]
-                    [clojure.contrib.inflect-test]))
+                    [clj-commons.humanize-test]
+                    [clj-commons.inflect-test]))
 
 #?(:cljs (enable-console-print!))
 
@@ -15,7 +15,7 @@
 
 (defn test-runner []
   (test/run-tests
-    'clojure.contrib.humanize-test
-    'clojure.contrib.inflect-test))
+    'clj-commons.humanize-test
+    'clj-commons.inflect-test))
 
 #?(:clj (defn test-ns-hook [] (test-runner)))

@@ -1,9 +1,9 @@
-(ns clojure.contrib.humanize
+(ns clj-commons.humanize
   (:refer-clojure :exclude [abs])
   (:require #?(:clj  [clojure.math.numeric-tower :refer [expt floor round abs]])
-            [clojure.contrib.inflect :refer [pluralize-noun in?]]
+            [clj-commons.humanize.inflect :refer [pluralize-noun in?]]
             [clojure.string :refer [join]]
-            #?(:clj  [clojure.contrib.macros :refer [with-dt-diff]])
+            #?(:clj  [clj-commons.humanize.macros :refer [with-dt-diff]])
             #?(:clj  [clj-time.core  :refer [after? interval in-seconds
                                              in-minutes in-hours in-days
                                              in-weeks in-months in-years]]
@@ -16,7 +16,7 @@
                :cljs [cljs-time.local :refer [local-now]])
             #?(:clj  [clj-time.coerce  :refer [to-date-time]]
                :cljs [cljs-time.coerce :refer [to-date-time]]))
-  #?(:cljs (:require-macros [clojure.contrib.macros :refer [with-dt-diff]])))
+  #?(:cljs (:require-macros [clj-commons.macros :refer [with-dt-diff]])))
 
 #?(:clj  (def ^:private num-format format)
    :cljs (def ^:private num-format #(gstring/format %1 %2)))
