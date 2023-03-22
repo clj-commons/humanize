@@ -8,19 +8,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Install clojure tools
-      uses: DeLaGuardo/setup-clojure@5.0
+    - name: Checkout
+      uses: actions/checkout@3.4.0
+
+    - name: Setup Java
+      uses: actions/setup-java@v3.10.0
       with:
-        cli: 1.11.1.1105
+        java-version: '11'
+        distribution: 'corretto'
+
+    - name: Install clojure tools
+      uses: DeLaGuardo/setup-clojure@10.2
+      with:
+        cli: 1.11.1.1165
+
+    - name: Cache clojure dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.m2/repository
+          ~/.gitlibs
+          ~/.deps.clj
+        # List all files containing dependencies:
+        key: cljdeps-${{ hashFiles('deps.edn') }}
+
     - name: Linter
       run: clojure -M:clj-kondo --lint src
+
     - name: Install karma
       run: npm install -g karma karma-cljs-test karma-chrome-launcher karma-firefox-launcher
-    - name: Run clj tests
-      run: clojure -Mtest
-    - name: Run chrome cljs tests
+
+    - name: Run JVM tests
+      run: clojure -X:test
+
+    - name: Run ClojureScript tests (Chrome)
       run:  clojure -Mcljs-test -x chrome-headless
-    - name: Run firefox cljs tests
+
+    - name: Ru ClojureScript tests (Firefox)
       run:  clojure -Mcljs-test -x firefox-headless
 
