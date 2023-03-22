@@ -44,6 +44,6 @@ jobs:
     - name: Run ClojureScript tests (Chrome)
       run:  clojure -Mcljs-test -x chrome-headless
 
-    - name: Ru ClojureScript tests (Firefox)
+    - name: Run ClojureScript tests (Firefox)
       run:  clojure -Mcljs-test -x firefox-headless
 

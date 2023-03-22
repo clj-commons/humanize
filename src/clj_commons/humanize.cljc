@@ -16,7 +16,7 @@
                :cljs [cljs-time.local :refer [local-now]])
             #?(:clj  [clj-time.coerce  :refer [to-date-time]]
                :cljs [cljs-time.coerce :refer [to-date-time]]))
-  #?(:cljs (:require-macros [clj-commons.macros :refer [with-dt-diff]])))
+  #?(:cljs (:require-macros [clj-commons.humanize.macros :refer [with-dt-diff]])))
 
 #?(:clj  (def ^:private num-format format)
    :cljs (def ^:private num-format #(gstring/format %1 %2)))
