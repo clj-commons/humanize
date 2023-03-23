@@ -117,46 +117,53 @@
 (deftest oxford-test
   (let [items ["apple", "orange", "banana", "pear", "pineapple", "strawberry"]]
     (testing "should return an empty string when given an empty list."
-      (is (= (oxford []) "")))
+      (is (= "" (oxford []))))
 
     (testing "should return a string version of a list that has only one value."
-      (is (= (oxford [(items 0)]) (items 0))))
+      (is (= (items 0)
+            (oxford [(items 0)]))))
 
     (testing "should return a string with no commas & items separated with `and` when passed exactly two values in list"
-      (is (oxford (take 2 items)) (str (items 0) " and " (items 1))))
+      (is (= "apple and orange"
+            (oxford (take 2 items)))))
 
     (testing "should return items separated by `and' when given a list of values"
-      (is (= (oxford (take 2 items)) (str (items 0) " and " (items 1))))
-      (is (= (oxford (take 3 items)) (str (items 0) ", "
-                                          (items 1) ", and " (items 2))))
-      (is (= (oxford (take 4 items)) (str (items 0) ", "
-                                          (items 1) ", "
-                                          (items 2) ", and " (items 3)))))
+      (is (= "apple, orange, and banana"
+            (oxford (take 3 items))))
+      (is (= "apple, orange, banana, and pear"
+            (oxford (take 4 items)))))
 
     (testing "should truncate a large list of items with proper pluralization"
-      (is (= (oxford (take 5 items)) (str (items 0) ", "
-                                          (items 1) ", "
-                                          (items 2) ", "
-                                          (items 3) ", and " 1 " other")))
-      (is (= (oxford (take 5 items)
-                     :maximum-display 2)
-             (str (items 0) ", "
-                  (items 1) ", and " 3 " others")))
-      (is (= (oxford (take 4 items)
-                     :maximum-display 1)
-             (str (items 0) " and " 3 " others"))))
+      (is (= "apple, orange, banana, pear, and 1 other"
+            (oxford (take 5 items))))
 
-    (testing "should accept custom trucation strings"
+      (is (= "apple, orange, and 3 others"
+            (oxford (take 5 items)
+                     :maximum-display 2)))
+      (is (= "apple and 3 others"
+            (oxford (take 4 items)
+                     :maximum-display 1))))
+
+    (testing "should use custom truncation nouns"
       (let [truncate-noun "fruit"]
-        (is (oxford (take 5 items)
-                    :truncate-noun truncate-noun)
-            (str (items 0) ", "
-                 (items 1) ", "
-                 (items 2) ", and " 2 " other " (pluralize-noun 2 truncate-noun)))
-        (is (oxford (take 3 items)
-                    :truncate-string truncate-noun)
-            (str (items 0) ", "
-                 (items 1) ", and " (items 2)))))))
+        (is (= "apple, orange, banana, pear, and 2 other fruits"
+              (oxford items
+                 :truncate-noun truncate-noun)))
+        (is (= "apple, orange, and banana"
+              (oxford (take 3 items)
+                 :truncate-noun truncate-noun)))))
+
+    (testing "should allow for different output conversion for the extra item count"
+      (is (= "apple, orange, and four others"
+            (oxford items
+              :maximum-display 2
+              :number-format numberword)))
+
+      (is (= "apple and five other fruits"
+            (oxford items
+              :maximum-display 1
+              :truncate-noun "fruit"
+              :number-format numberword))))))
 
 (deftest datetime-test
   (let [past (fn [n unit] (datetime (now) :now-dt (-> n unit from-now)))

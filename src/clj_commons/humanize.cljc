@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [abs])
   (:require #?(:clj  [clojure.math.numeric-tower :refer [expt floor round abs]])
             [clj-commons.humanize.inflect :refer [pluralize-noun in?]]
-            [clojure.string :refer [join]]
+            [clojure.string :as string :refer [join]]
             #?(:clj  [clj-commons.humanize.macros :refer [with-dt-diff]])
             #?(:clj  [clj-time.core  :refer [after? interval in-seconds
                                              in-minutes in-hours in-days
@@ -211,11 +211,17 @@
      (truncate string length "...")))
 
 (defn oxford
-  "Converts a list of items to a human readable string
-   with an optional limit."
-  [coll  & {:keys [maximum-display truncate-noun]
+  "Converts a list of items to a human-readable string, such as \"apple, pear, and 2 other fruits\".
+
+  Options:
+  :maximum-display - the maximum number of items to display before identifying the remaining count (default: 4)
+  :truncate-noun - the string used to identify the type of items in the list, e.g., \"fruit\" - will
+  be pluralized if necessary
+  :number-format - function used to format the number of additional items in the list (default: `str`)
+  "
+  [coll & {:keys [maximum-display truncate-noun number-format]
             :or {maximum-display 4
-                 truncate-noun nil}}]
+                 number-format str}}]
 
   (let [coll-length (count coll)]
     (cond
@@ -235,15 +241,17 @@
 
       (> coll-length maximum-display) (let [display-coll (take maximum-display coll)
                                             remaining    (- coll-length maximum-display)
-                                            last-item    (if (empty? truncate-noun)
-                                                           (str remaining " " (pluralize-noun remaining "other"))
-                                                           (str remaining " other " (pluralize-noun remaining
+                                            remaining' (number-format remaining)
+                                            last-item    (if (string/blank? truncate-noun)
+                                                           (str remaining' " " (pluralize-noun remaining "other"))
+                                                           (str remaining' " other " (pluralize-noun remaining
                                                                                                     truncate-noun)))]
-                                        (if (= 1 maximum-display)
+                                        (str
+                                          (join (interpose ", " display-coll))
                                           ; if only one item is displayed there should be no oxford comma
-                                          (str (apply str display-coll) " and " last-item)
-                                          (str (join (interpose ", " display-coll))
-                                               ", and " last-item)))
+                                          (when-not (= 1 maximum-display)
+                                            ",")
+                                          " and " last-item))
      ;; TODO: shouldn't reach here, throw exception
       :else coll-length)))
 

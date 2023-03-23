@@ -159,6 +159,12 @@ user> (h/oxford ["apple" "orange" "mango" "pear"]
                                        :maximum-display 2
                                        :truncate-noun "fruit")
 "apple, orange, and 2 other fruits"
+
+user> (h/oxford ["apple" "orange" "mango" "pear"]
+        :maximum-display 2
+        :number-format h/numberword
+        :truncate-noun "fruit")
+"apple, orange, and two other fruits"
 ```
 
 ### pluralize-noun
