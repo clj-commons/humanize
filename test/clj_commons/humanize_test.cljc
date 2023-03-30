@@ -6,7 +6,7 @@
                                               duration]
              :as h]
             [clj-commons.humanize.inflect :refer [pluralize-noun]]
-            #?(:clj [clojure.math.numeric-tower :refer [expt]])
+            #?(:clj [clojure.math :as math])
             #?(:clj  [clj-time.core  :refer [now from-now seconds millis minutes
                                              hours days weeks months years plus]]
                :cljs [cljs-time.core :refer [now from-now seconds millis minutes
@@ -16,7 +16,8 @@
             #?(:clj  [clj-time.coerce  :refer [to-date-time to-string]]
                :cljs [cljs-time.coerce :refer [to-date-time to-string]])))
 
-#?(:cljs (def ^:private expt (.-pow js/Math)))
+#?(:clj (def ^:private expt math/pow)
+   :cljs (def ^:private expt (.-pow js/Math)))
 
 (deftest intcomma-test
   (testing "Testing intcomma function with expected data."
