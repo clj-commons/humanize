@@ -1,6 +1,6 @@
 (ns clj-commons.humanize
   (:refer-clojure :exclude [abs])
-  (:require #?(:clj  [clojure.math.numeric-tower :refer [expt floor round abs]])
+  (:require #?(:clj [clojure.math :as math :refer [floor round log log10]])
             [clj-commons.humanize.inflect :refer [pluralize-noun in?]]
             [clojure.string :as string :refer [join]]
             #?(:clj  [clj-commons.humanize.macros :refer [with-dt-diff]])
@@ -21,18 +21,18 @@
 #?(:clj  (def ^:private num-format format)
    :cljs (def ^:private num-format #(gstring/format %1 %2)))
 
+#?(:clj (def ^:private expt math/pow))
 #?(:cljs (def ^:private expt (.-pow js/Math)))
 #?(:cljs (def ^:private floor (.-floor js/Math)))
 #?(:cljs (def ^:private round (.-round js/Math)))
+#?(:clj (def ^:private abs clojure.core/abs))
 #?(:cljs (def ^:private abs (.-abs js/Math)))
 
-#?(:clj  (def ^:private log #(java.lang.Math/log %))
-   :cljs (def ^:private log (.-log js/Math)))
+#?(:cljs (def ^:private log (.-log js/Math)))
 
 #?(:cljs (def ^:private rounding-const 1000000))
 
-#?(:clj  (def ^:private log10 #(java.lang.Math/log10 %))
-   :cljs (def ^:private log10 (or (.-log10 js/Math)                   ;; prefer native implementation
+#?(:cljs (def ^:private log10 (or (.-log10 js/Math)                   ;; prefer native implementation
                         #(/ (.round js/Math
                                     (* rounding-const
                                        (/ (.log js/Math %)
