@@ -2,12 +2,10 @@
   (:refer-clojure :exclude [abs])
   (:require #?(:clj [clojure.math :as math :refer [floor round log log10]])
             [clj-commons.humanize.inflect :refer [pluralize-noun in?]]
-            [clojure.string :as string :refer [join]]
-            #?@(:clj [[cljc.java-time.duration :as jt.duration]
-                      [cljc.java-time.local-date-time :as jt.ldt]]
-                :cljs [[cljs.java-time.duration :as jt.duration]
-                       [cljs.java-time.local-date-time :as jt.ldt]])
             [clj-commons.humanize.time-convert :refer [coerce-to-local-date-time]]
+            [cljc.java-time.duration :as jt.duration]
+            [cljc.java-time.local-date-time :as jt.ldt]
+            [clojure.string :as string :refer [join]]
             #?@(:cljs [[goog.string :as gstring]
                        [goog.string.format]])))
 
@@ -16,6 +14,7 @@
 
 #?(:clj (def ^:private expt math/pow)
    :cljs (def ^:private expt (.-pow js/Math)))
+
 #?(:cljs (def ^:private floor (.-floor js/Math)))
 #?(:cljs (def ^:private round (.-round js/Math)))
 #?(:clj (def ^:private abs clojure.core/abs)
