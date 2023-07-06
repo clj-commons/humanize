@@ -74,10 +74,10 @@
 
 (deftest filesize-test
   (let [f (fn [input binary format]
-            (filesize input
-              (cond-> {}
-                binary (assoc :binary true)
-                format (assoc :format format))))]
+            (apply filesize input
+              (cond-> []
+                binary (conj :binary true)
+                format (conj :format format))))]
     (are [input binary format expected] (is (= expected (f input binary format)))
                                         0 nil nil "0"
                                         300 nil nil "300.0B"
