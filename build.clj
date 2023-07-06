@@ -2,15 +2,8 @@
   (:require [clojure.tools.build.api :as b]
             [deps-deploy.deps-deploy :as dd]))
 
-(def lib 'clj-commons/humanize)
-(def version "0.3")
-
-(defn make-version [opts]
-  (or (:version opts)
-      (str version "."
-           (b/git-count-revs nil)
-           (when-not (:release opts)
-             "-SNAPSHOT"))))
+(def lib 'org.clj-commons/humanize)
+(def version "1.0-beta-1")
 
 (def base-opts
   {:lib       lib
@@ -25,8 +18,7 @@
 (defn jar
   "Build a JAR."
   [opts]
-  (let [version (make-version opts)
-        {:keys [src class-dir] :as opts'} (-> base-opts
+  (let [{:keys [src class-dir] :as opts'} (-> base-opts
                                               (merge opts)
                                               (assoc :jar-file (format "target/%s-%s.jar" (name lib) version)
                                                      :version  version))]
