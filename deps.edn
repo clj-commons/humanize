@@ -1,6 +1,7 @@
 {:deps  {org.clojure/clojure               {:mvn/version "1.11.1"}
          clj-time/clj-time                 {:mvn/version "0.15.2"}
-         com.widdindustries/cljc.java-time {:mvn/version "0.1.21"}}
+         com.widdindustries/cljc.java-time {:mvn/version "0.1.21"}
+         henryw374/js-joda                 {:mvn/version "3.2.0-0"}}
  :paths ["src"]
  :aliases
  ;; clj -X:test

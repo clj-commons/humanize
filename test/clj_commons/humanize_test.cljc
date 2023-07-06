@@ -5,9 +5,8 @@
                                           filesize truncate oxford datetime
                                           duration]
              :as h]
-            #?@(:clj [[clojure.math :as math]
-                      [cljc.java-time.local-date-time :as jt.ldt]])
-            #?(:cljs [cljs.java-time.local-date-time :as jt.ldt])))
+            #?@(:clj [[clojure.math :as math]])
+            [cljc.java-time.local-date-time :as jt.ldt]))
 
 #?(:clj  (def ^:private expt math/pow)
    :cljs (def ^:private expt (.-pow js/Math)))
