@@ -1,16 +1,12 @@
 
-# clojure-humanize
+# org.clj-commons/humanize
 
+[![Clojars Project](https://img.shields.io/clojars/v/org.clj-commons/humanize.svg)](https://clojars.org/org.clj-commons/humanize)
 ![clojure.yml](https://github.com/clj-commons/humanize/actions/workflows/clojure.yml/badge.svg?event=push)
+[![cljdoc badge](https://cljdoc.org/badge/org.clj-commons/humanize)](https://cljdoc.org/d/org.clj-commons/humanize)
 
 A Clojure(script) library to produce human-readable strings for numbers, dates, and more
 based on similar libraries in other languages
-
-## Installation
-
-__([via Clojars](https://clojars.org/clojure-humanize))__
-
-[![Clojars Project](http://clojars.org/clojure-humanize/latest-version.svg)](http://clojars.org/clojure-humanize)
 
 ## Usage
 

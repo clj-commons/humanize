@@ -3,6 +3,10 @@
          com.widdindustries/cljc.java-time {:mvn/version "0.1.21"}
          henryw374/js-joda                 {:mvn/version "3.2.0-0"}}
  :paths ["src"]
+
+ :net.lewisship.build/scm
+ {:url "https://github.com/clj-commons/humanize"}
+
  :aliases
  ;; clj -X:test
  {:test      {:extra-paths ["test"]

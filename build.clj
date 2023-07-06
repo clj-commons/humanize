@@ -1,48 +1,31 @@
+;; clj -T:build <var>
+
 (ns build
-  (:require [clojure.tools.build.api :as b]
-            [deps-deploy.deps-deploy :as dd]))
+  (:require [clojure.tools.build.api :as build]
+            [net.lewisship.build :as b]
+            [clojure.string :as str]))
 
-(def lib 'org.clj-commons/humanize)
-(def version "1.0-beta-1")
+(def lib 'org.clj-commons/pretty)
+(def version (-> "VERSION.txt" slurp str/trim))
 
-(def base-opts
-  {:lib       lib
-   :basis     (b/create-basis {:project "deps.edn"})
-   :src       ["src"]
-   :class-dir "target/classes"})
+(def jar-params {:project-name lib
+                 :version version})
 
-(defn clean [_]
-  (b/delete {:path "target"})
-  (b/delete {:path "cljs-test-runner-out"}))
+(defn clean
+  [_params]
+  (build/delete {:path "target"}))
 
 (defn jar
-  "Build a JAR."
-  [opts]
-  (let [{:keys [src class-dir] :as opts'} (-> base-opts
-                                              (merge opts)
-                                              (assoc :jar-file (format "target/%s-%s.jar" (name lib) version)
-                                                     :version  version))]
-    (b/write-pom opts')
-    (b/copy-dir {:src-dirs   src
-                 :target-dir class-dir})
-    (b/jar opts')
-    opts'))
-
-(defn deploy-clojars
-  "Deploy to Clojars."
-  [{:keys [jar-file class-dir] :as opts}]
-  (let [opts' (merge opts
-                     {:installer :remote
-                      :artifact (b/resolve-path jar-file)
-                      :pom-file (b/pom-path {:lib lib
-                                             :class-dir class-dir})})]
-    (dd/deploy opts')
-    opts'))
+  [_params]
+  (b/create-jar jar-params))
 
 (defn deploy
-  "Build and deploy the JAR to Clojars.  Defaults to a snapshot,
-  specify :release true for a final release."
-  [opts]
-  (-> opts
-      jar
-      deploy-clojars))
+  [_params]
+  (clean nil)
+  (b/deploy-jar (assoc (jar nil) :sign-artifacts? false)))
+
+(defn codox
+  [_params]
+  (b/generate-codox {:project-name lib
+                     :version version}))
+
