@@ -2,42 +2,34 @@
   (:refer-clojure :exclude [abs])
   (:require #?(:clj [clojure.math :as math :refer [floor round log log10]])
             [clj-commons.humanize.inflect :refer [pluralize-noun in?]]
+            [clj-commons.humanize.time-convert :refer [coerce-to-local-date-time]]
+            [cljc.java-time.duration :as jt.duration]
+            [cljc.java-time.local-date-time :as jt.ldt]
             [clojure.string :as string :refer [join]]
-            #?(:clj  [clj-commons.humanize.macros :refer [with-dt-diff]])
-            #?(:clj  [clj-time.core  :refer [after? interval in-seconds
-                                             in-minutes in-hours in-days
-                                             in-weeks in-months in-years]]
-               :cljs [cljs-time.core :refer [after? interval in-seconds
-                                             in-minutes in-hours in-days
-                                             in-weeks in-months in-years]])
-            #?(:cljs [goog.string :as gstring])
-            #?(:cljs [goog.string.format])
-            #?(:clj  [clj-time.local  :refer [local-now]]
-               :cljs [cljs-time.local :refer [local-now]])
-            #?(:clj  [clj-time.coerce  :refer [to-date-time]]
-               :cljs [cljs-time.coerce :refer [to-date-time]]))
-  #?(:cljs (:require-macros [clj-commons.humanize.macros :refer [with-dt-diff]])))
+            #?@(:cljs [[goog.string :as gstring]
+                       [goog.string.format]])))
 
 #?(:clj  (def ^:private num-format format)
    :cljs (def ^:private num-format #(gstring/format %1 %2)))
 
-#?(:clj (def ^:private expt math/pow))
-#?(:cljs (def ^:private expt (.-pow js/Math)))
+#?(:clj (def ^:private expt math/pow)
+   :cljs (def ^:private expt (.-pow js/Math)))
+
 #?(:cljs (def ^:private floor (.-floor js/Math)))
 #?(:cljs (def ^:private round (.-round js/Math)))
-#?(:clj (def ^:private abs clojure.core/abs))
-#?(:cljs (def ^:private abs (.-abs js/Math)))
+#?(:clj (def ^:private abs clojure.core/abs)
+   :cljs (def ^:private abs (.-abs js/Math)))
 
 #?(:cljs (def ^:private log (.-log js/Math)))
 
 #?(:cljs (def ^:private rounding-const 1000000))
 
-#?(:cljs (def ^:private log10 (or (.-log10 js/Math)                   ;; prefer native implementation
-                        #(/ (.round js/Math
-                                    (* rounding-const
-                                       (/ (.log js/Math %)
+#?(:cljs (def ^:private log10 (or (.-log10 js/Math)         ;; prefer native implementation
+                                #(/ (.round js/Math
+                                      (* rounding-const
+                                        (/ (.log js/Math %)
                                           js/Math.LN10)))
-                            rounding-const))))              ;; FIXME rounding
+                                   rounding-const))))       ;; TODO: improve rounding here
 
 #?(:clj  (def ^:private char->int #(Character/getNumericValue %))
    :cljs (def ^:private char->int #(int %)))
@@ -46,19 +38,18 @@
   "Converts an integer to a string containing commas. every three digits.
    For example, 3000 becomes '3,000' and 45000 becomes '45,000'. "
   [num]
-  (let [
-        decimal (abs (int num)) ;;  FIXME: (abs )
-        sign (if (< num 0) "-" "")
+  (let [decimal     (abs (int num))                         ;;  FIXME: (abs )
+        sign        (if (< num 0) "-" "")
 
         ;; convert into string representation
-        repr (str decimal)
-        repr-len (count repr)
+        repr        (str decimal)
+        repr-len    (count repr)
 
         ;; right-aligned 3 elements partition
         partitioned [(subs repr 0 (rem repr-len 3))
                      (map #(apply str %)
-                          (partition 3 (subs repr
-                                             (rem repr-len 3))))]
+                       (partition 3 (subs repr
+                                      (rem repr-len 3))))]
 
         ;; flatten, and remove empty string
         partitioned (remove empty? (flatten partitioned))]
@@ -70,19 +61,19 @@
   "Converts an integer to its ordinal as a string. 1 is '1st', 2 is '2nd',
    3 is '3rd', etc."
   [num]
-    (let [ordinals ["th", "st", "nd", "rd", "th",
-                    "th", "th", "th", "th", "th"]
-          remainder-100 (rem num 100)
-          remainder-10  (rem num 10)]
+  (let [ordinals      ["th", "st", "nd", "rd", "th",
+                       "th", "th", "th", "th", "th"]
+        remainder-100 (rem num 100)
+        remainder-10  (rem num 10)]
 
-      (if (in? remainder-100 [11 12 13])
-        ;; special case for *11, *12, *13
-        (str num (ordinals 0))
-        (str num (ordinals remainder-10)))))
+    (if (in? remainder-100 [11 12 13])
+      ;; special case for *11, *12, *13
+      (str num (ordinals 0))
+      (str num (ordinals remainder-10)))))
 
-(defn logn [num base]
+(defn- logn [num base]
   (/ (round (log num))
-     (round (log base))))
+    (round (log base))))
 
 
 (def ^:private human-pows [[100 " googol"]
@@ -106,17 +97,38 @@
   [num & {:keys [format] :or {format "%.1f"}}]
   (let [base-pow (int (floor (log10 num)))
         [base-pow suffix] (first (filter (fn [[base _]] (>= base-pow base)) human-pows))
-        value (float (/ num (expt 10 base-pow)))]
+        value    (float (/ num (expt 10 base-pow)))]
     (str (num-format format value) suffix)))
 
-
 (def ^:private numap
-  {0 "",1 "one",2 "two",3 "three",4 "four",5 "five",
-   6 "six",7 "seven",8 "eight",9 "nine",10 "ten",
-   11 "eleven",12 "twelve",13 "thirteen",14 "fourteen",
-   15 "fifteen",16 "sixteen",17 "seventeen",18 "eighteen",
-   19 "nineteen",20 "twenty",30 "thirty",40 "forty",
-   50 "fifty",60 "sixty",70 "seventy",80 "eighty",90 "ninety"})
+  {0  ""
+   1  "one"
+   2  "two"
+   3  "three"
+   4  "four"
+   5  "five"
+   6  "six"
+   7  "seven"
+   8  "eight"
+   9  "nine"
+   10 "ten"
+   11 "eleven"
+   12 "twelve"
+   13 "thirteen"
+   14 "fourteen"
+   15 "fifteen"
+   16 "sixteen"
+   17 "seventeen"
+   18 "eighteen"
+   19 "nineteen"
+   20 "twenty"
+   30 "thirty"
+   40 "forty"
+   50 "fifty"
+   60 "sixty"
+   70 "seventy"
+   80 "eighty"
+   90 "ninety"})
 
 (defn numberword
   "Takes a number and return a full written string form. For example,
@@ -128,87 +140,84 @@
   (if (zero? num)
     "zero"
 
-  (let [digitcnt (int (log10 num))
-        divisible? (fn [num div] (zero? (rem num div)))
-        n-digit (fn [num n] (char->int (.charAt (str num) n)))] ;; TODO rename
+    (let [digitcnt   (int (log10 num))
+          divisible? (fn [num div] (zero? (rem num div)))
+          n-digit    (fn [num n] (char->int (.charAt (str num) n)))] ;; TODO rename
 
-    (cond
-     ;; handle million part
-     (>= digitcnt 6)    (if (divisible? num 1000000)
-                           (join " " [(numberword (int (/ num 1000000)))
-                                      "million"])
-                           (join " " [(numberword (int (/ num 1000000)))
-                                       "million"
-                                       (numberword (rem num 1000000))]))
+      (cond
+        ;; handle million part
+        (>= digitcnt 6) (if (divisible? num 1000000)
+                          (join " " [(numberword (int (/ num 1000000)))
+                                     "million"])
+                          (join " " [(numberword (int (/ num 1000000)))
+                                     "million"
+                                     (numberword (rem num 1000000))]))
 
-     ;; handle thousand part
-     (>= digitcnt 3)    (if (divisible? num 1000)
-                            (join " " [(numberword (int (/ num 1000)))
-                                       "thousand"])
-                            (join " " [(numberword (int (/ num 1000)))
-                                       "thousand"
-                                       (numberword (rem num 1000))]))
+        ;; handle thousand part
+        (>= digitcnt 3) (if (divisible? num 1000)
+                          (join " " [(numberword (int (/ num 1000)))
+                                     "thousand"])
+                          (join " " [(numberword (int (/ num 1000)))
+                                     "thousand"
+                                     (numberword (rem num 1000))]))
 
-     ;; handle hundred part
-     (>= digitcnt 2)    (if (divisible? num 100)
-                            (join " " [(numap (int (/ num 100)))
-                                       "hundred"])
-                            (join " " [(numap (int (/ num 100)))
-                                       "hundred"
-                                       "and"
-                                       (numberword (rem num 100))]))
+        ;; handle hundred part
+        (>= digitcnt 2) (if (divisible? num 100)
+                          (join " " [(numap (int (/ num 100)))
+                                     "hundred"])
+                          (join " " [(numap (int (/ num 100)))
+                                     "hundred"
+                                     "and"
+                                     (numberword (rem num 100))]))
 
-     ;; handle the last two digits
-     (< num 20)                 (numap num)
-     (divisible? num 10)        (numap num)
-     :else                      (join "-" [(numap (* 10 (n-digit num 0)))
-                                           (numap (n-digit num 1))])))))
+        ;; handle the last two digits
+        (< num 20) (numap num)
+        (divisible? num 10) (numap num)
+        :else (join "-" [(numap (* 10 (n-digit num 0)))
+                         (numap (n-digit num 1))])))))
+
+(def ^:private decimal-sizes [:B :KB :MB :GB :TB :PB :EB :ZB :YB])
+
+(def ^:private binary-sizes [:B :KiB :MiB :GiB :TiB :PiB :EiB :ZiB :YiB])
 
 (defn filesize
   "Format a number of bytes as a human readable filesize (eg. 10 kB). By
    default, decimal suffixes (kB, MB) are used.  Passing :binary true will use
    binary suffixes (KiB, MiB) instead."
   [bytes & {:keys [binary format]
-            :or {binary false
-                 format "%.1f"}}]
+            :or   {binary false
+                   format "%.1f"}}]
 
   (if (zero? bytes)
     ;; special case for zero
     "0"
 
-  (let [decimal-sizes  [:B, :KB, :MB, :GB, :TB,
-                        :PB, :EB, :ZB, :YB]
-        binary-sizes [:B, :KiB, :MiB, :GiB, :TiB,
-                      :PiB, :EiB, :ZiB, :YiB]
+    (let [units    (if binary binary-sizes decimal-sizes)
+          base     (if binary 1024 1000)
 
-        units (if binary binary-sizes decimal-sizes)
-        base  (if binary 1024 1000)
-
-        base-pow  (int (floor (logn bytes base)))
-        ;; if base power shouldn't be larger than biggest unit
-        base-pow  (if (< base-pow (count units))
-                    base-pow
-                    (dec (count units)))
-        suffix (name (get units base-pow))
-        value (float (/ bytes (expt base base-pow)))
-        ]
-
-    (str (num-format format value) suffix))))
+          base-pow (int (floor (logn bytes base)))
+          ;; if base power shouldn't be larger than biggest unit
+          base-pow (if (< base-pow (count units))
+                     base-pow
+                     (dec (count units)))
+          suffix   (name (get units base-pow))
+          value    (float (/ bytes (expt base base-pow)))]
+      (str (num-format format value) suffix))))
 
 (defn truncate
   "Truncate a string with suffix (ellipsis by default) if it is
    longer than specified length."
 
   ([string length suffix]
-     (let [string-len (count string)
-           suffix-len (count suffix)]
+   (let [string-len (count string)
+         suffix-len (count suffix)]
 
-       (if (<= string-len length)
-         string
-         (str (subs string 0 (- length suffix-len)) suffix))))
+     (if (<= string-len length)
+       string
+       (str (subs string 0 (- length suffix-len)) suffix))))
 
   ([string length]
-     (truncate string length "...")))
+   (truncate string length "…")))
 
 (defn oxford
   "Converts a list of items to a human-readable string, such as \"apple, pear, and 2 other fruits\".
@@ -220,20 +229,20 @@
   :number-format - function used to format the number of additional items in the list (default: `str`)
   "
   [coll & {:keys [maximum-display truncate-noun number-format]
-            :or {maximum-display 4
-                 number-format str}}]
+           :or   {maximum-display 4
+                  number-format   str}}]
 
   (let [coll-length (count coll)]
     (cond
-     ;; if coll has one or zero items
+      ;; if coll has one or zero items
       (< coll-length 2) (join coll)
 
-     ;; if coll has exactly two items, there won't be a comma, so join them with "and"
+      ;; if coll has exactly two items, there won't be a comma, so join them with "and"
       (and (= coll-length 2)
-           (<= coll-length maximum-display))
+        (<= coll-length maximum-display))
       (str (first coll) " and " (second coll))
 
-     ;; if the number of items doesn't exceed maximum display size
+      ;; if the number of items doesn't exceed maximum display size
       (<= coll-length maximum-display) (let [before-last (take (dec coll-length) coll)
                                              last-item   (last coll)]
                                          (str (join (interpose ", " before-last))
@@ -241,79 +250,100 @@
 
       (> coll-length maximum-display) (let [display-coll (take maximum-display coll)
                                             remaining    (- coll-length maximum-display)
-                                            remaining' (number-format remaining)
+                                            remaining'   (number-format remaining)
                                             last-item    (if (string/blank? truncate-noun)
                                                            (str remaining' " " (pluralize-noun remaining "other"))
                                                            (str remaining' " other " (pluralize-noun remaining
-                                                                                                    truncate-noun)))]
+                                                                                       truncate-noun)))]
                                         (str
                                           (join (interpose ", " display-coll))
                                           ; if only one item is displayed there should be no oxford comma
                                           (when-not (= 1 maximum-display)
                                             ",")
                                           " and " last-item))
-     ;; TODO: shouldn't reach here, throw exception
+      ;; TODO: shouldn't reach here, throw exception
       :else coll-length)))
 
-(defn- in-decades [diff]
-  (/ (in-years diff) 10))
+(def ^:private one-minute-in-seconds 60)
+(def ^:private one-hour-in-seconds (* 60 one-minute-in-seconds))
+(def ^:private one-day-in-seconds (* 24 one-hour-in-seconds))
+(def ^:private one-week-in-seconds (* 7 one-day-in-seconds))
+(def ^:private one-month-in-seconds (* 4 one-week-in-seconds))
+(def ^:private one-year-in-seconds (* 52 one-week-in-seconds))
+(def ^:private one-decade-in-seconds (* 10 one-year-in-seconds))
+(def ^:private one-century-in-seconds (* 100 one-year-in-seconds))
+(def ^:private one-millennia-in-seconds (* 1000 one-year-in-seconds))
 
-(defn- in-centuries [diff]
-  (/ (in-years diff) 100))
-
-(defn- in-millennia [diff]
-  (/ (in-years diff) 1000))
+(defn format-delta-str
+  [amount time-unit suffix prefix future-time?]
+  (if future-time?
+    (str prefix " " amount " " (pluralize-noun amount time-unit))
+    (str amount " " (pluralize-noun amount time-unit) " " suffix)))
 
 (defn datetime
-  "Given a datetime or date, return a human-friendly representation
-   of the amount of time elapsed. "
+  "Given a java.time.LocalDate or java.time.LocalDateTime, returns a
+  human-friendly representation of the amount of time elapsed compared to now.
+
+   Optional keyword args:
+  * :now-dt - specify the value for 'now'
+  * :prefix - adjust the verbiage for times in the future
+  * :suffix - adjust the verbiage for times in the past"
   [then-dt & {:keys [now-dt suffix prefix]
-              :or {now-dt (local-now)
-                   suffix  "ago"
-                   prefix "in"}}]
-  (let [then-dt (to-date-time then-dt)
-        now-dt  (to-date-time now-dt)
-        future-time? (after? then-dt now-dt)
-        diff (if future-time?
-               (interval now-dt then-dt)
-               (interval then-dt now-dt))]
+              :or   {now-dt (jt.ldt/now)
+                     suffix "ago"
+                     prefix "in"}}]
+  (let [then-dt            (coerce-to-local-date-time then-dt)
+        now-dt             (coerce-to-local-date-time now-dt)
+        future-time?       (jt.ldt/is-after then-dt now-dt)
+        ;; get the Duration between the two times
+        time-between       (-> (jt.duration/between then-dt now-dt)
+                             (jt.duration/abs))
+        delta-in-seconds   (jt.duration/get-seconds time-between)
+        delta-in-minutes   (int (/ delta-in-seconds one-minute-in-seconds))
+        delta-in-hours     (int (/ delta-in-seconds one-hour-in-seconds))
+        delta-in-days      (int (/ delta-in-seconds one-day-in-seconds))
+        delta-in-weeks     (int (/ delta-in-seconds one-week-in-seconds))
+        delta-in-months    (int (/ delta-in-seconds one-month-in-seconds))
+        delta-in-years     (int (/ delta-in-seconds one-year-in-seconds))
+        delta-in-decades   (int (/ delta-in-seconds one-decade-in-seconds))
+        delta-in-centuries (int (/ delta-in-seconds one-century-in-seconds))
+        delta-in-millennia (int (/ delta-in-seconds one-millennia-in-seconds))]
     (cond
+      (pos? delta-in-millennia)
+      (format-delta-str delta-in-millennia "millenium" suffix prefix future-time?)
 
-      ;; if the diff is greater than a millennium
-      (>= (in-millennia diff) 1) (with-dt-diff in-millennia diff "millenium" future-time? prefix suffix)
+      (pos? delta-in-centuries)
+      (format-delta-str delta-in-centuries "century" suffix prefix future-time?)
 
-      ;; if the diff is less than a millennium
-      (>= (in-centuries diff) 1) (with-dt-diff in-centuries diff "century" future-time? prefix suffix)
+      (pos? delta-in-decades)
+      (format-delta-str delta-in-decades "decade" suffix prefix future-time?)
 
-      ;; if the diff is less than a century
-      (>= (in-decades diff) 1) (with-dt-diff in-decades diff "decade" future-time? prefix suffix)
+      (pos? delta-in-years)
+      (format-delta-str delta-in-years "year" suffix prefix future-time?)
 
-      ;; if the diff is less than a decade
-      (>= (in-years diff) 1) (with-dt-diff in-years diff "year" future-time? prefix suffix)
+      (pos? delta-in-months)
+      (format-delta-str delta-in-months "month" suffix prefix future-time?)
 
-      ;; if the diff is less than a year
-      (>= (in-months diff) 1) (with-dt-diff in-months diff "month" future-time? prefix suffix)
+      (pos? delta-in-weeks)
+      (format-delta-str delta-in-weeks "week" suffix prefix future-time?)
 
-      ;; if the diff is less than a month
-      (>= (in-weeks diff) 1) (with-dt-diff in-weeks diff "week" future-time? prefix suffix)
+      (pos? delta-in-days)
+      (format-delta-str delta-in-days "day" suffix prefix future-time?)
 
-      ;; if the diff is less than a week
-      (>= (in-days diff) 1) (with-dt-diff in-days diff "day" future-time? prefix suffix)
+      (pos? delta-in-hours)
+      (format-delta-str delta-in-hours "hour" suffix prefix future-time?)
 
-      ;; if the diff is less than a day
-      (>= (in-hours diff) 1) (with-dt-diff in-hours diff "hour" future-time? prefix suffix)
+      (pos? delta-in-minutes)
+      (format-delta-str delta-in-minutes "minute" suffix prefix future-time?)
 
-      ;; if the diff is less than an hour
-      (>= (in-minutes diff) 1) (with-dt-diff in-minutes diff "minute" future-time? prefix suffix)
+      (pos? delta-in-seconds)
+      (format-delta-str delta-in-seconds "second" suffix prefix future-time?)
 
-      ;; if the diff is less than a minute
-      (>= (in-seconds diff) 1) (with-dt-diff in-seconds diff "second" future-time? prefix suffix)
+      future-time?
+      (str prefix " a moment")
 
-      ;; if the diff is less than a second
-      :else  (if future-time?
-               (str prefix " a moment")
-               (str "a moment " suffix))
-      )))
+      :else
+      (str "a moment " suffix))))
 
 (def ^:private duration-periods
   [[(* 1000 60 60 24 365) "year"]
@@ -335,7 +365,7 @@
   {:pre [(<= 0 duration-ms)]}
   (loop [remainder duration-ms
          [[period-ms period-name] & more-periods] duration-periods
-         terms []]
+         terms     []]
     (cond
       (nil? period-ms)
       terms
@@ -344,10 +374,10 @@
       (recur remainder more-periods terms)
 
       :else
-      (let [period-count (int (/ remainder period-ms))
+      (let [period-count   (int (/ remainder period-ms))
             next-remainder (mod remainder period-ms)]
         (recur next-remainder more-periods
-               (conj terms [period-count period-name]))))))
+          (conj terms [period-count period-name]))))))
 
 (defn duration
   "Converts duration, in milliseconds, into a string describing it in terms
@@ -373,15 +403,15 @@
   ([duration-ms options]
    (let [terms (duration-terms duration-ms)
          {:keys [number-format list-format short-text]
-          :or {number-format numberword
-               short-text "less than a second"
-               ;; This default, instead of oxford, because the entire string is a single "value"
-               list-format #(join ", " %)}} options]
+          :or   {number-format numberword
+                 short-text    "less than a second"
+                 ;; This default, instead of oxford, because the entire string is a single "value"
+                 list-format   #(join ", " %)}} options]
      (if (seq terms)
        (->> terms
-            (map (fn [[period-count period-name]]
-                   (str (number-format period-count)
-                        " "
-                        (pluralize-noun period-count period-name))))
-            list-format)
+         (map (fn [[period-count period-name]]
+                (str (number-format period-count)
+                     " "
+                     (pluralize-noun period-count period-name))))
+         list-format)
        short-text))))

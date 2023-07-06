@@ -1,6 +1,7 @@
-{:deps  {org.clojure/clojure            {:mvn/version "1.11.1"}
-         clj-time/clj-time              {:mvn/version "0.15.2"}
-         com.andrewmcveigh/cljs-time    {:mvn/version "0.5.2"}}
+{:deps  {org.clojure/clojure               {:mvn/version "1.11.1"}
+         clj-time/clj-time                 {:mvn/version "0.15.2"}
+         com.widdindustries/cljc.java-time {:mvn/version "0.1.21"}
+         henryw374/js-joda                 {:mvn/version "3.2.0-0"}}
  :paths ["src"]
  :aliases
  ;; clj -X:test
@@ -11,7 +12,7 @@
   :cljs-test {:extra-paths ["test"]
               :extra-deps  {kongeor/cljs-test-runner
                             {:git/url "https://github.com/kongeor/cljs-test-runner"
-                             :sha     "fa604e9e5f4e74a544958dfdf4c5ccc2a4b2c916"}}
+                             :git/sha "fa604e9e5f4e74a544958dfdf4c5ccc2a4b2c916"}}
               :main-opts   ["-m" "cljs-test-runner.main"]}
   :clj-kondo {:replace-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
               :main-opts    ["-m" "clj-kondo.main"]}
