@@ -5,7 +5,7 @@
             [net.lewisship.build :as b]
             [clojure.string :as str]))
 
-(def lib 'org.clj-commons/pretty)
+(def lib 'org.clj-commons/humanize)
 (def version (-> "VERSION.txt" slurp str/trim))
 
 (def jar-params {:project-name lib
