@@ -1,4 +1,4 @@
-## 1.0 - UNRELEASED
+## 1.0 - 14 Jul 2023
 
 This release moves the repository to [clj-commons](https://github.com/clj-commons/humanize); we thank
 [Thura Hlaing](https://github.com/trhura)'s efforts in initiating this project. As part of this move, the Maven
