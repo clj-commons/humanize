@@ -20,7 +20,6 @@
               :main-opts   ["-m" "cljs-test-runner.main"]}
   :clj-kondo {:replace-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
               :main-opts    ["-m" "clj-kondo.main"]}
-  :build     {:deps       {io.github.clojure/tools.build
-                           {:git/tag "v0.9.3" :git/sha "e537cd1"}
-                           slipset/deps-deploy {:mvn/version "0.2.0"}}
+  :build     {:deps       {io.github.hlship/build-tools
+                           {:git/tag "0.9" :git/sha "4efa3c9"}}
               :ns-default build}}}
