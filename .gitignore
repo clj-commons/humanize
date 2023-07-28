@@ -11,3 +11,6 @@ pom.xml.asc
 *.iml
 cljs-test-runner-out/
 .cpcache/
+.clj-kondo/.cache
+.lsp/.cache
+.portal/vs-code.edn
