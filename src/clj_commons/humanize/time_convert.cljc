@@ -1,3 +1,4 @@
+#_:clj-kondo/ignore
 (ns ^:no-doc clj-commons.humanize.time-convert
   "Internal utility to convert strings and other typs into LocalDateTime "
   (:require [cljc.java-time.extn.predicates :as jt.predicates]
