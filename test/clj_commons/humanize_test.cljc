@@ -228,6 +228,12 @@
       (is (= "10 minutes ago"
             (datetime (jt.ldt/now)
               :now-dt (jt.ldt/plus-minutes (jt.ldt/now) 10)))))
+    #?@(:cljs
+        (testing "datetime accepts js/Date"
+          (is (= "a moment ago" (datetime (js/Date.))))
+          (is (= "10 minutes ago"
+                        (datetime (js/Date.)
+                                  :now-dt (jt.ldt/plus-minutes (jt.ldt/now) 10))))))
     (testing "test phrases"
       (doseq [[phrase time-shift-fn] datetime-test-phrases]
         (is (= phrase
