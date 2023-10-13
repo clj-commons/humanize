@@ -8,6 +8,7 @@ artifact coordinates have changed, as well as the namespaces.
 - Tools build building and deployment
 - Github actions CI
 ### Changed
+- Switches from [`com.andrewmcveigh/cljs-time`](https://github.com/andrewmcveigh/cljs-time) to [`com.widdindustries/cljc.java-time`](https://github.com/henryw374/cljc.java-time). This is a potentially breaking change.
 - Update dependencies to the most recent versions
 - Switched build to deps.edn
 ### Fixed
