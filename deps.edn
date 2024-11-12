@@ -1,7 +1,5 @@
-{:deps  {org.clojure/clojure               {:mvn/version "1.11.1"}
-         clj-time/clj-time                 {:mvn/version "0.15.2"}
-         com.widdindustries/cljc.java-time {:mvn/version "0.1.21"}
-         henryw374/js-joda                 {:mvn/version "3.2.0-0"}}
+{:deps  {org.clojure/clojure               {:mvn/version "1.11.4"}
+         com.widdindustries/cljc.java-time {:mvn/version "0.1.21"}}
  :paths ["src"]
 
  :net.lewisship.build/scm
@@ -14,12 +12,11 @@
                             {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
               :exec-fn     cognitect.test-runner.api/test}
   :cljs-test {:extra-paths ["test"]
-              :extra-deps  {kongeor/cljs-test-runner
-                            {:git/url "https://github.com/kongeor/cljs-test-runner"
-                             :git/sha "fa604e9e5f4e74a544958dfdf4c5ccc2a4b2c916"}}
+              :extra-deps  {olical/cljs-test-runner {:mvn/version "3.8.1"}
+                            henryw374/js-joda {:mvn/version "3.2.0-0"}}
               :main-opts   ["-m" "cljs-test-runner.main"]}
   :clj-kondo {:replace-deps {clj-kondo/clj-kondo {:mvn/version "RELEASE"}}
               :main-opts    ["-m" "clj-kondo.main"]}
   :build     {:deps       {io.github.hlship/build-tools
-                           {:git/tag "0.9" :git/sha "4efa3c9"}}
+                           {:git/tag "0.10.2" :git/sha "3c446e4"}}
               :ns-default build}}}

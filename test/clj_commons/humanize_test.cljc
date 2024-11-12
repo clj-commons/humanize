@@ -5,11 +5,10 @@
                                           filesize truncate oxford datetime
                                           duration]
              :as h]
-            #?@(:clj [[clojure.math :as math]])
+            [clojure.math :as math]
             [cljc.java-time.local-date-time :as jt.ldt]))
 
-#?(:clj  (def ^:private expt math/pow)
-   :cljs (def ^:private expt (.-pow js/Math)))
+(def ^:private expt math/pow)
 
 (deftest intcomma-test
   (are [input expected] (= expected (intcomma input))
@@ -228,7 +227,7 @@
       (is (= "10 minutes ago"
             (datetime (jt.ldt/now)
               :now-dt (jt.ldt/plus-minutes (jt.ldt/now) 10)))))
-    #?@(:cljs
+    #?(:cljs
         (testing "datetime accepts js/Date"
           (is (= "a moment ago" (datetime (js/Date.))))
           (is (= "10 minutes ago"

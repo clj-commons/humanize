@@ -14,3 +14,4 @@ cljs-test-runner-out/
 .clj-kondo/.cache
 .lsp/.cache
 .portal/vs-code.edn
+.calva/repl.calva-repl

@@ -65,7 +65,7 @@ Converts a large integer to a friendly text representation. Works best
 for numbers over 1 million. For example, 1000000 becomes '1.0
 million', 1200000 becomes '1.2 million' and '1200000000' becomes '1.2
 billion'.  Supports up to decillion (33 digits) and googol (100
-digits).  
+digits).
 
 ```clojure
 user>  (h/intword 2000000000)
@@ -188,7 +188,7 @@ user> (i/pluralize-noun 6 "buzz")
 ```
 
 Other functions in the inflect namespace are used to extend the rules
-for how particular words, or particular letter patterns in words, 
+for how particular words, or particular letter patterns in words,
 can be pluralized.
 
 ### datetime
@@ -197,19 +197,19 @@ Given a datetime or date, return a human-friendly representation
 of the amount of time difference, relative to the current time.
 
 ```clojure
-user> (require '[clj-time.core :as t])
-nil
+user> (import '(java.time LocalDateTime) '(java.time.temporal ChronoUnit))
+java.time.temporal.ChronoUnit
 
-user> (h/datetime (t/plus (t/now) (t/seconds -30)))
+user> (h/datetime (.plusSeconds (LocalDateTime/now) -30))
 "30 seconds ago"
 
-user> (h/datetime (t/plus (t/now) (t/seconds 30)))
+user> (h/datetime (.plusSeconds (LocalDateTime/now) 30))
 "in 30 seconds"
 
-user> (h/datetime (t/plus (t/now) (t/years -20)))
+user> (h/datetime (.plus (LocalDateTime/now) -20 ChronoUnit/YEARS))
 "2 decades ago"
 
-user> (h/datetime (t/plus (t/now) (t/years -7)))
+user> (h/datetime (.plus (LocalDateTime/now) -7 ChronoUnit/YEARS))
 "7 years ago"
 
 ```
@@ -277,7 +277,7 @@ clojure -T:build jar
 Deploy a snapshot:
 
 ```clj
- clojure -T:build deploy 
+ clojure -T:build deploy
 ```
 
 Set `:release` to `true` for a release version (make sure the version number in `build.clj` is correct first):
