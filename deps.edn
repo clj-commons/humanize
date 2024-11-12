@@ -3,7 +3,8 @@
  :paths ["src"]
 
  :net.lewisship.build/scm
- {:url "https://github.com/clj-commons/humanize"}
+ {:url "https://github.com/clj-commons/humanize"
+  :license :epl}
 
  :aliases
  ;; clj -X:test

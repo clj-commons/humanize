@@ -1,3 +1,22 @@
+## 1.1 - 12 Nov 2024
+
+Thanks to Sean Corfield for straightening out build and dependency issues
+with this library; this eliminates unnecessary dependencies for JVM and
+Babashka builds.
+
+### Changes
+
+* use Java Time in README examples
+* removes clj-time as a dependency
+* moves js-joda to a :cljs-test only dependency
+* kongeor/cljs-test-runner is behind olical/cljs-test-runner so switch to the latter
+* update build-tools
+* update GH workflow dependencies
+* ignore Calva REPL file
+* remove unnecessary cljc_test file (both clj and cljs test runners file the tests just fine)
+* use clojure.math in cljs and clj
+* fix the bad cljs-only test splice
+
 ## 1.0 - 14 Jul 2023
 
 This release moves the repository to [clj-commons](https://github.com/clj-commons/humanize); we thank
