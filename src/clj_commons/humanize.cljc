@@ -4,6 +4,7 @@
             [clj-commons.humanize.inflect :refer [pluralize-noun in?]]
             [clj-commons.humanize.time-convert :refer [coerce-to-local-date-time]]
             [cljc.java-time.duration :as jt.duration]
+            [cljc.java-time.extn.predicates :as jt.predicates]
             [cljc.java-time.local-date-time :as jt.ldt]
             [clojure.string :as string :refer [join]]
             #?@(:cljs [[goog.string :as gstring]
@@ -292,8 +293,16 @@
               :or   {now-dt (jt.ldt/now)
                      suffix "ago"
                      prefix "in"}}]
-  (let [then-dt            (coerce-to-local-date-time then-dt)
+  (let [local-date?        (jt.predicates/local-date? then-dt)
+        then-dt            (coerce-to-local-date-time then-dt)
         now-dt             (coerce-to-local-date-time now-dt)
+        now-dt             (if local-date?
+                             (-> now-dt
+                                 (jt.ldt/with-hour 0)
+                                 (jt.ldt/with-minute 0)
+                                 (jt.ldt/with-second 0)
+                                 (jt.ldt/with-nano 0))
+                             now-dt)
         future-time?       (jt.ldt/is-after then-dt now-dt)
         ;; get the Duration between the two times
         time-between       (-> (jt.duration/between then-dt now-dt)
@@ -341,6 +350,9 @@
 
       future-time?
       (str prefix " a moment")
+
+      local-date?
+      "today"
 
       :else
       (str "a moment " suffix))))
