@@ -6,6 +6,7 @@
                                           duration]
              :as h]
             [clojure.math :as math]
+            [cljc.java-time.local-date :as jt.ld]
             [cljc.java-time.local-date-time :as jt.ldt]))
 
 (def ^:private expt math/pow)
@@ -216,7 +217,8 @@
 
 (deftest datetime-test
   (let [t1-str "2022-01-01T01:00:00"
-        t1     (jt.ldt/parse t1-str)]
+        t1     (jt.ldt/parse t1-str)
+        ld-now (jt.ld/now)]
     (is (= "a moment ago"
           (datetime (jt.ldt/now)))
       ":now-dt is optional")
@@ -256,7 +258,20 @@
             (datetime (jt.ldt/plus-years t1 1)
               :now-dt t1
               :suffix "foo"))
-        "suffix for a time in the past does nothing"))))
+          "suffix for a time in the past does nothing"))
+    (testing "datetime handles date arguments intuitively and without being affected by the specific time now"
+      (is (= "today"
+             (datetime (jt.ld/now)))
+          "LocalDate/now is today")
+      (is (and (= "in 1 day"
+                  (datetime (jt.ld/plus-days ld-now 1)))
+               (= "1 day ago"
+                  (datetime (jt.ld/minus-days ld-now 1)))
+               (= "in 3 days"
+                  (datetime (jt.ld/plus-days ld-now 3)))
+               (= "3 days ago"
+                  (datetime (jt.ld/minus-days ld-now 3))))
+          "equidistant dates in the future vs past are accounted for in the same way"))))
 
 (deftest durations
   (testing "duration to terms"
