@@ -261,8 +261,12 @@
           "suffix for a time in the past does nothing"))
     (testing "datetime handles date arguments intuitively and without being affected by the specific time now"
       (is (= "today"
-             (datetime (jt.ld/now)))
+             (datetime ld-now))
           "LocalDate/now is today")
+      (is (= "today"
+             (datetime ld-now
+                       :now-dt (jt.ldt/now)))
+          "has no problems with ldt :now-dt arguments")
       (is (and (= "in 1 day"
                   (datetime (jt.ld/plus-days ld-now 1)))
                (= "1 day ago"
