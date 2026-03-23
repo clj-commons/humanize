@@ -1,6 +1,8 @@
-## 1.2 - UNRELEASED
+## 1.2 - 23 Mar 2026
 
 * Added `relative-datetime`
+
+[Closed Issues](https://github.com/clj-commons/humanize/milestone/5?closed=1)
 
 ## 1.1 - 12 Nov 2024
 
