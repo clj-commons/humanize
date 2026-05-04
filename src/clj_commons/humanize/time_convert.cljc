@@ -3,6 +3,7 @@
   "Internal utility to convert strings and other typs into LocalDateTime "
   (:require [cljc.java-time.extn.predicates :as jt.predicates]
             [cljc.java-time.format.date-time-formatter :as dt.formats]
+            [cljc.java-time.local-date :as jt.ld]
             [cljc.java-time.local-date-time :as jt.ldt]
             [cljc.java-time.instant :as jt.i]
             [cljc.java-time.zone-id :as jt.zi]
@@ -38,7 +39,10 @@
                (jvm/java-util-date? t)
                (jt.ldt/parse (jvm/java-util-date->iso8601-str t) dt.formats/iso-date-time)]
         :cljs [(instance? js/Date t)
-               (jt.ldt/of-instant (jt.i/of-epoch-milli (.getTime t)) (jt.zi/system-default))])
+               (jt.ldt/of-instant (jt.i/of-epoch-milli (.getTime t)) (jt.zi/system-default))
+
+               (jt.predicates/local-date? t)
+               (jt.ld/at-start-of-day t)])
 
     ;; Strings
     (looks-like-an-iso8601-string? t)
